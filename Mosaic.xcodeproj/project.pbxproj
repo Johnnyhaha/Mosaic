@@ -8,13 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		2D0C349E1FB456610055F0A5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0C349D1FB456610055F0A5 /* AppDelegate.swift */; };
-		2D0C34A01FB456610055F0A5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0C349F1FB456610055F0A5 /* ViewController.swift */; };
 		2D0C34A31FB456610055F0A5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2D0C34A11FB456610055F0A5 /* Main.storyboard */; };
 		2D0C34A61FB456610055F0A5 /* Mosaic.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2D0C34A41FB456610055F0A5 /* Mosaic.xcdatamodeld */; };
 		2D0C34A81FB456610055F0A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D0C34A71FB456610055F0A5 /* Assets.xcassets */; };
 		2D0C34AB1FB456610055F0A5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2D0C34A91FB456610055F0A5 /* LaunchScreen.storyboard */; };
 		2D0C34B61FB456620055F0A5 /* MosaicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0C34B51FB456620055F0A5 /* MosaicTests.swift */; };
 		2D0C34C11FB456620055F0A5 /* MosaicUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0C34C01FB456620055F0A5 /* MosaicUITests.swift */; };
+		2D0C34D31FB468FB0055F0A5 /* ChoosePhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0C34D21FB468FB0055F0A5 /* ChoosePhotoViewController.swift */; };
+		2D8B1DD11FB46EE400242215 /* CreateMosaicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8B1DD01FB46EE400242215 /* CreateMosaicViewController.swift */; };
+		2D8B1DD31FB46EF600242215 /* OptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8B1DD21FB46EF600242215 /* OptionsViewController.swift */; };
+		2D8B1DD51FB46F1700242215 /* CompositePhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8B1DD41FB46F1700242215 /* CompositePhotoViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,7 +40,6 @@
 /* Begin PBXFileReference section */
 		2D0C349A1FB456610055F0A5 /* Mosaic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mosaic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D0C349D1FB456610055F0A5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		2D0C349F1FB456610055F0A5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		2D0C34A21FB456610055F0A5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2D0C34A51FB456610055F0A5 /* Mosaic.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Mosaic.xcdatamodel; sourceTree = "<group>"; };
 		2D0C34A71FB456610055F0A5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -49,6 +51,10 @@
 		2D0C34BC1FB456620055F0A5 /* MosaicUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MosaicUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D0C34C01FB456620055F0A5 /* MosaicUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosaicUITests.swift; sourceTree = "<group>"; };
 		2D0C34C21FB456620055F0A5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2D0C34D21FB468FB0055F0A5 /* ChoosePhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoosePhotoViewController.swift; sourceTree = "<group>"; };
+		2D8B1DD01FB46EE400242215 /* CreateMosaicViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMosaicViewController.swift; sourceTree = "<group>"; };
+		2D8B1DD21FB46EF600242215 /* OptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsViewController.swift; sourceTree = "<group>"; };
+		2D8B1DD41FB46F1700242215 /* CompositePhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositePhotoViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,7 +106,10 @@
 			isa = PBXGroup;
 			children = (
 				2D0C349D1FB456610055F0A5 /* AppDelegate.swift */,
-				2D0C349F1FB456610055F0A5 /* ViewController.swift */,
+				2D0C34CF1FB461060055F0A5 /* PhotoProcessor */,
+				2D0C34D01FB461420055F0A5 /* MosaicCreation */,
+				2D0C34D11FB461710055F0A5 /* ImageSelection */,
+				2D0C34CE1FB460B90055F0A5 /* ViewControllers */,
 				2D0C34A11FB456610055F0A5 /* Main.storyboard */,
 				2D0C34A71FB456610055F0A5 /* Assets.xcassets */,
 				2D0C34A91FB456610055F0A5 /* LaunchScreen.storyboard */,
@@ -126,6 +135,38 @@
 				2D0C34C21FB456620055F0A5 /* Info.plist */,
 			);
 			path = MosaicUITests;
+			sourceTree = "<group>";
+		};
+		2D0C34CE1FB460B90055F0A5 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				2D0C34D21FB468FB0055F0A5 /* ChoosePhotoViewController.swift */,
+				2D8B1DD01FB46EE400242215 /* CreateMosaicViewController.swift */,
+				2D8B1DD21FB46EF600242215 /* OptionsViewController.swift */,
+				2D8B1DD41FB46F1700242215 /* CompositePhotoViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		2D0C34CF1FB461060055F0A5 /* PhotoProcessor */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = PhotoProcessor;
+			sourceTree = "<group>";
+		};
+		2D0C34D01FB461420055F0A5 /* MosaicCreation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = MosaicCreation;
+			sourceTree = "<group>";
+		};
+		2D0C34D11FB461710055F0A5 /* ImageSelection */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ImageSelection;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -262,9 +303,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2D0C34A01FB456610055F0A5 /* ViewController.swift in Sources */,
+				2D8B1DD11FB46EE400242215 /* CreateMosaicViewController.swift in Sources */,
 				2D0C34A61FB456610055F0A5 /* Mosaic.xcdatamodeld in Sources */,
 				2D0C349E1FB456610055F0A5 /* AppDelegate.swift in Sources */,
+				2D8B1DD51FB46F1700242215 /* CompositePhotoViewController.swift in Sources */,
+				2D0C34D31FB468FB0055F0A5 /* ChoosePhotoViewController.swift in Sources */,
+				2D8B1DD31FB46EF600242215 /* OptionsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
