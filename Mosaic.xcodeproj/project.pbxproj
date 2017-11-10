@@ -18,6 +18,10 @@
 		2D8B1DD11FB46EE400242215 /* CreateMosaicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8B1DD01FB46EE400242215 /* CreateMosaicViewController.swift */; };
 		2D8B1DD31FB46EF600242215 /* OptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8B1DD21FB46EF600242215 /* OptionsViewController.swift */; };
 		2D8B1DD51FB46F1700242215 /* CompositePhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8B1DD41FB46F1700242215 /* CompositePhotoViewController.swift */; };
+		2D90AA301FB49A1800F90FA5 /* ImageSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D90AA2F1FB49A1800F90FA5 /* ImageSelection.swift */; };
+		2D90AA321FB49A4200F90FA5 /* MetalImageSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D90AA311FB49A4200F90FA5 /* MetalImageSelection.swift */; };
+		2D90AA341FB49A5E00F90FA5 /* MosicaCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D90AA331FB49A5E00F90FA5 /* MosicaCreator.swift */; };
+		2D90AA361FB49A7D00F90FA5 /* NaiveImageSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D90AA351FB49A7D00F90FA5 /* NaiveImageSelection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +59,10 @@
 		2D8B1DD01FB46EE400242215 /* CreateMosaicViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMosaicViewController.swift; sourceTree = "<group>"; };
 		2D8B1DD21FB46EF600242215 /* OptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsViewController.swift; sourceTree = "<group>"; };
 		2D8B1DD41FB46F1700242215 /* CompositePhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositePhotoViewController.swift; sourceTree = "<group>"; };
+		2D90AA2F1FB49A1800F90FA5 /* ImageSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSelection.swift; sourceTree = "<group>"; };
+		2D90AA311FB49A4200F90FA5 /* MetalImageSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalImageSelection.swift; sourceTree = "<group>"; };
+		2D90AA331FB49A5E00F90FA5 /* MosicaCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosicaCreator.swift; sourceTree = "<group>"; };
+		2D90AA351FB49A7D00F90FA5 /* NaiveImageSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaiveImageSelection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +166,7 @@
 		2D0C34D01FB461420055F0A5 /* MosaicCreation */ = {
 			isa = PBXGroup;
 			children = (
+				2D90AA331FB49A5E00F90FA5 /* MosicaCreator.swift */,
 			);
 			path = MosaicCreation;
 			sourceTree = "<group>";
@@ -165,6 +174,9 @@
 		2D0C34D11FB461710055F0A5 /* ImageSelection */ = {
 			isa = PBXGroup;
 			children = (
+				2D90AA2F1FB49A1800F90FA5 /* ImageSelection.swift */,
+				2D90AA311FB49A4200F90FA5 /* MetalImageSelection.swift */,
+				2D90AA351FB49A7D00F90FA5 /* NaiveImageSelection.swift */,
 			);
 			path = ImageSelection;
 			sourceTree = "<group>";
@@ -303,11 +315,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2D90AA341FB49A5E00F90FA5 /* MosicaCreator.swift in Sources */,
+				2D90AA321FB49A4200F90FA5 /* MetalImageSelection.swift in Sources */,
 				2D8B1DD11FB46EE400242215 /* CreateMosaicViewController.swift in Sources */,
 				2D0C34A61FB456610055F0A5 /* Mosaic.xcdatamodeld in Sources */,
 				2D0C349E1FB456610055F0A5 /* AppDelegate.swift in Sources */,
 				2D8B1DD51FB46F1700242215 /* CompositePhotoViewController.swift in Sources */,
 				2D0C34D31FB468FB0055F0A5 /* ChoosePhotoViewController.swift in Sources */,
+				2D90AA301FB49A1800F90FA5 /* ImageSelection.swift in Sources */,
+				2D90AA361FB49A7D00F90FA5 /* NaiveImageSelection.swift in Sources */,
 				2D8B1DD31FB46EF600242215 /* OptionsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
