@@ -13,7 +13,7 @@ import UIKit
 struct ImageChoice {
     var position    : (row: Int, col: Int)
     var image       : UIImage
-    var region      : Region
+    var region      : CGRect
     var fit         : CGFloat // 相片匹配程度有多好 0最好    
 }
 
