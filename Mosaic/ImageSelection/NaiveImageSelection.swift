@@ -11,7 +11,7 @@ import UIKit
 import Photos
 
 struct NaiveSelectionConstants {
-    static let skipSize = 5 // 检查时跳过的像素值
+//    static let skipSize = 5 // 检查时跳过的像素值
 }
 
 enum NaiveSelectionError: Error {
@@ -41,12 +41,14 @@ class NaiveImageSelection: ImageSelection {
     private var referencePixelData: CFData
     private var allPhotos:      PHFetchResult<PHAsset>? //定义获得图片
     private var imageManager:   PHImageManager //定义加载图片
+    private var skipSize:       Int
     
     required init(refImage: UIImage) {
         self.referenceImage = refImage
         self.referencePixelData = self.referenceImage.cgImage!.dataProvider!.data!
         self.imageManager = PHImageManager()
         self.allPhotos = nil
+        self.skipSize = 0
         
         // 相册四种授权状态
         PHPhotoLibrary.requestAuthorization { (status) in
@@ -81,7 +83,7 @@ class NaiveImageSelection: ImageSelection {
         guard (refRegion.width == otherRegion.width && refRegion.height == otherRegion.height) else {
             throw NaiveSelectionError.RegionMismatch
         }
-        guard (NaiveSelectionConstants.skipSize >= 0) else {
+        guard (self.skipSize >= 0) else {
             throw NaiveSelectionError.InvalidSkipSize
         }
         
@@ -90,9 +92,9 @@ class NaiveImageSelection: ImageSelection {
 //        var othRGB: (red: CGFloat, blue: CGFloat, green: CGFloat) = (0,0,0)
         
 //        遍历图片中每隔26个单位的一个像素点RGB的数值
-        for deltaY in stride(from: 0, to: refRegion.height - 1, by: 1 + NaiveSelectionConstants.skipSize) {
+        for deltaY in stride(from: 0, to: refRegion.height - 1, by: 1 + self.skipSize) {
 //            print("row \(deltaY+1)/\(refRegion.height) (current fit: \(fit))")
-            for deltaX in stride(from: 0, to: refRegion.width - 1, by: 1 + NaiveSelectionConstants.skipSize) {
+            for deltaX in stride(from: 0, to: refRegion.width - 1, by: 1 + self.skipSize) {
 //                图片中像素点的位置和颜色
                 let refPoint = CGPoint(x: Int(refRegion.topLeft.x) + deltaX, y: Int(refRegion.topLeft.y) + deltaY)
 //                let refColor = self.referenceImage.getPixelColor(pos: refPoint)
@@ -114,11 +116,12 @@ class NaiveImageSelection: ImageSelection {
         return fit
     }
     
-    func select(gridSizePoints: Int, onSelect: @escaping (ImageChoice) -> Void) throws -> Void {
+    func select(gridSizePoints: Int, quality: Int, onSelect: @escaping (ImageChoice) -> Void) throws -> Void {
         if (allPhotos == nil) {
             // 没有检索到图片，预处理没有完成
             throw ImageSelectionError.PreprocessingIncomplete
         }
+        self.skipSize = MosaicCreationConstants.qualityMax - quality - MosaicCreationConstants.qualityMin
         // 把图片分成网格
         let numRows: Int = Int(self.referenceImage.size.height) / gridSizePoints
         let numCols: Int = Int(self.referenceImage.size.width) / gridSizePoints
