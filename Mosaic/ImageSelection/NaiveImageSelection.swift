@@ -11,7 +11,7 @@ import UIKit
 import Photos
 
 struct NaiveSelectionConstants {
-    static let skipSize = 26 // 检查时跳过的像素值
+    static let skipSize = 5 // 检查时跳过的像素值
 }
 
 enum NaiveSelectionError: Error {
@@ -19,30 +19,32 @@ enum NaiveSelectionError: Error {
     case RegionMismatch // 图片大小不匹配
 }
 
-// 图片颜色的RGB值和透明度
-extension UIImage {
-    func getPixelColor(pos: CGPoint) -> UIColor {
-        let pixelData = self.cgImage!.dataProvider!.data
-        let data: UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData)
-        // 图片像素信息
-        let pixelInfo: Int = ((Int(self.size.width) * Int(pos.y)) + Int(pos.x)) * 4
-        
-        let r = CGFloat(data[pixelInfo]) / CGFloat(255.0)
-        let g = CGFloat(data[pixelInfo+1]) / CGFloat(255.0)
-        let b = CGFloat(data[pixelInfo+2]) / CGFloat(255.0)
-        let a = CGFloat(data[pixelInfo+3]) / CGFloat(255.0)
-        
-        return UIColor(red: r, green: g, blue: b, alpha: a)
-    }
-}
+//// 图片颜色的RGB值和透明度
+//extension UIImage {
+//    func getPixelColor(pos: CGPoint) -> UIColor {
+//        let pixelData = self.cgImage!.dataProvider!.data
+//        let data: UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData)
+//        // 图片像素信息
+//        let pixelInfo: Int = ((Int(self.size.width) * Int(pos.y)) + Int(pos.x)) * 4
+//
+//        let r = CGFloat(data[pixelInfo]) / CGFloat(255.0)
+//        let g = CGFloat(data[pixelInfo+1]) / CGFloat(255.0)
+//        let b = CGFloat(data[pixelInfo+2]) / CGFloat(255.0)
+//        let a = CGFloat(data[pixelInfo+3]) / CGFloat(255.0)
+//
+//        return UIColor(red: r, green: g, blue: b, alpha: a)
+//    }
+//}
 
 class NaiveImageSelection: ImageSelection {
     private var referenceImage: UIImage
+    private var referencePixelData: CFData
     private var allPhotos:      PHFetchResult<PHAsset>? //定义获得图片
     private var imageManager:   PHImageManager //定义加载图片
     
     required init(refImage: UIImage) {
         self.referenceImage = refImage
+        self.referencePixelData = self.referenceImage.cgImage!.dataProvider!.data!
         self.imageManager = PHImageManager()
         self.allPhotos = nil
         
@@ -60,6 +62,20 @@ class NaiveImageSelection: ImageSelection {
         }
     }
     
+    private func comparePoints(refPoint: CGPoint, otherImage: UIImage, otherPoint: CGPoint) -> CGFloat {
+        let otherPixelData = otherImage.cgImage!.dataProvider!.data
+        let refData: UnsafePointer<UInt8> = CFDataGetBytePtr(self.referencePixelData)
+        let othData: UnsafePointer<UInt8> = CFDataGetBytePtr(otherPixelData)
+        
+        let refPixelIndex: Int = ((Int(referenceImage.size.width) * Int(refPoint.y)) + Int(refPoint.x)) * 4
+        let otherPixelIndex: Int = ((Int(otherImage.size.width) * Int(otherPoint.y)) + Int(otherPoint.x)) * 4
+        
+        let redDiff = Int(refData[refPixelIndex]) - Int(othData[otherPixelIndex])
+        let greenDiff = Int(refData[refPixelIndex+1]) - Int(othData[otherPixelIndex+1])
+        let blueDiff = Int(refData[refPixelIndex+2]) - Int(othData[otherPixelIndex+2])
+        return CGFloat(abs(redDiff) + abs(greenDiff) + abs(blueDiff)) / CGFloat(255.0)
+    }
+    
 //    选择图片的像素区域与其他图片相差RGB数值比较。寻找相差数值最小，颜色最接近的图片
     private func compareRegions(refRegion: Region, otherImage: UIImage, otherRegion: Region) throws -> CGFloat {
         guard (refRegion.width == otherRegion.width && refRegion.height == otherRegion.height) else {
@@ -70,8 +86,8 @@ class NaiveImageSelection: ImageSelection {
         }
         
         var fit: CGFloat = 0.0
-        var refRGB: (red: CGFloat, blue: CGFloat, green: CGFloat) = (0,0,0)
-        var othRGB: (red: CGFloat, blue: CGFloat, green: CGFloat) = (0,0,0)
+//        var refRGB: (red: CGFloat, blue: CGFloat, green: CGFloat) = (0,0,0)
+//        var othRGB: (red: CGFloat, blue: CGFloat, green: CGFloat) = (0,0,0)
         
 //        遍历图片中每隔26个单位的一个像素点RGB的数值
         for deltaY in stride(from: 0, to: refRegion.height - 1, by: 1 + NaiveSelectionConstants.skipSize) {
@@ -79,17 +95,19 @@ class NaiveImageSelection: ImageSelection {
             for deltaX in stride(from: 0, to: refRegion.width - 1, by: 1 + NaiveSelectionConstants.skipSize) {
 //                图片中像素点的位置和颜色
                 let refPoint = CGPoint(x: Int(refRegion.topLeft.x) + deltaX, y: Int(refRegion.topLeft.y) + deltaY)
-                let refColor = self.referenceImage.getPixelColor(pos: refPoint)
+//                let refColor = self.referenceImage.getPixelColor(pos: refPoint)
                 
                 let otherPoint = CGPoint(x: Int(otherRegion.topLeft.x) + deltaX, y: Int(otherRegion.topLeft.y) + deltaY)
-                let otherColor = otherImage.getPixelColor(pos: otherPoint)
+                fit += self.comparePoints(refPoint: refPoint, otherImage: otherImage, otherPoint: otherPoint)
+//                let otherColor = otherImage.getPixelColor(pos: otherPoint)
+//
+//                refColor.getRed(&refRGB.red, green: &refRGB.green, blue: &refRGB.blue, alpha: nil)
+//                otherColor.getRed(&othRGB.red, green: &othRGB.green, blue: &othRGB.blue, alpha: nil)
+//                let redAbs = abs(refRGB.red - othRGB.red)
+//                let blueAbs = abs(refRGB.blue - othRGB.blue)
+//                let greenAbs = abs(refRGB.green - othRGB.green)
+//                fit += redAbs + blueAbs + greenAbs
                 
-                refColor.getRed(&refRGB.red, green: &refRGB.green, blue: &refRGB.blue, alpha: nil)
-                otherColor.getRed(&othRGB.red, green: &othRGB.green, blue: &othRGB.blue, alpha: nil)
-                let redAbs = abs(refRGB.red - othRGB.red)
-                let blueAbs = abs(refRGB.blue - othRGB.blue)
-                let greenAbs = abs(refRGB.green - othRGB.green)
-                fit += redAbs + blueAbs + greenAbs
 //                fit += abs(refRGB.red - othRGB.red) + abs(refRGB.blue - othRGB.blue) + abs(refRGB.green - othRGB.green)
             }
         }
