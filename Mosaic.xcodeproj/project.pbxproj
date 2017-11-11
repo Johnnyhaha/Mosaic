@@ -15,6 +15,8 @@
 		2D0C34B61FB456620055F0A5 /* MosaicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0C34B51FB456620055F0A5 /* MosaicTests.swift */; };
 		2D0C34C11FB456620055F0A5 /* MosaicUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0C34C01FB456620055F0A5 /* MosaicUITests.swift */; };
 		2D0C34D31FB468FB0055F0A5 /* ChoosePhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0C34D21FB468FB0055F0A5 /* ChoosePhotoViewController.swift */; };
+		2D48B5841FB6EA98006A2777 /* Preprocessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D48B5831FB6EA98006A2777 /* Preprocessing.swift */; };
+		2D48B5861FB6EAB9006A2777 /* TenPointAveraging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D48B5851FB6EAB9006A2777 /* TenPointAveraging.swift */; };
 		2D8B1DD11FB46EE400242215 /* CreateMosaicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8B1DD01FB46EE400242215 /* CreateMosaicViewController.swift */; };
 		2D8B1DD31FB46EF600242215 /* OptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8B1DD21FB46EF600242215 /* OptionsViewController.swift */; };
 		2D8B1DD51FB46F1700242215 /* CompositePhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8B1DD41FB46F1700242215 /* CompositePhotoViewController.swift */; };
@@ -56,6 +58,8 @@
 		2D0C34C01FB456620055F0A5 /* MosaicUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosaicUITests.swift; sourceTree = "<group>"; };
 		2D0C34C21FB456620055F0A5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2D0C34D21FB468FB0055F0A5 /* ChoosePhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoosePhotoViewController.swift; sourceTree = "<group>"; };
+		2D48B5831FB6EA98006A2777 /* Preprocessing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preprocessing.swift; sourceTree = "<group>"; };
+		2D48B5851FB6EAB9006A2777 /* TenPointAveraging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TenPointAveraging.swift; sourceTree = "<group>"; };
 		2D8B1DD01FB46EE400242215 /* CreateMosaicViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMosaicViewController.swift; sourceTree = "<group>"; };
 		2D8B1DD21FB46EF600242215 /* OptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsViewController.swift; sourceTree = "<group>"; };
 		2D8B1DD41FB46F1700242215 /* CompositePhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositePhotoViewController.swift; sourceTree = "<group>"; };
@@ -159,6 +163,8 @@
 		2D0C34CF1FB461060055F0A5 /* PhotoProcessor */ = {
 			isa = PBXGroup;
 			children = (
+				2D48B5831FB6EA98006A2777 /* Preprocessing.swift */,
+				2D48B5851FB6EAB9006A2777 /* TenPointAveraging.swift */,
 			);
 			path = PhotoProcessor;
 			sourceTree = "<group>";
@@ -322,9 +328,11 @@
 				2D0C349E1FB456610055F0A5 /* AppDelegate.swift in Sources */,
 				2D8B1DD51FB46F1700242215 /* CompositePhotoViewController.swift in Sources */,
 				2D0C34D31FB468FB0055F0A5 /* ChoosePhotoViewController.swift in Sources */,
+				2D48B5841FB6EA98006A2777 /* Preprocessing.swift in Sources */,
 				2D90AA301FB49A1800F90FA5 /* ImageSelection.swift in Sources */,
 				2D90AA361FB49A7D00F90FA5 /* NaiveImageSelection.swift in Sources */,
 				2D8B1DD31FB46EF600242215 /* OptionsViewController.swift in Sources */,
+				2D48B5861FB6EAB9006A2777 /* TenPointAveraging.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
