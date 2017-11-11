@@ -68,10 +68,10 @@ class NaiveImageSelection: ImageSelection {
         let otherPixelData = otherImage.cgImage!.dataProvider!.data
         let refData: UnsafePointer<UInt8> = CFDataGetBytePtr(self.referencePixelData)
         let othData: UnsafePointer<UInt8> = CFDataGetBytePtr(otherPixelData)
-        
+
         let refPixelIndex: Int = ((Int(referenceImage.size.width) * Int(refPoint.y)) + Int(refPoint.x)) * 4
         let otherPixelIndex: Int = ((Int(otherImage.size.width) * Int(otherPoint.y)) + Int(otherPoint.x)) * 4
-        
+
         let redDiff = Int(refData[refPixelIndex]) - Int(othData[otherPixelIndex])
         let greenDiff = Int(refData[refPixelIndex+1]) - Int(othData[otherPixelIndex+1])
         let blueDiff = Int(refData[refPixelIndex+2]) - Int(othData[otherPixelIndex+2])
@@ -80,9 +80,9 @@ class NaiveImageSelection: ImageSelection {
     
 //    选择图片的像素区域与其他图片相差RGB数值比较。寻找相差数值最小，颜色最接近的图片
     private func compareRegions(refRegion: Region, otherImage: UIImage, otherRegion: Region) throws -> CGFloat {
-        guard (refRegion.width == otherRegion.width && refRegion.height == otherRegion.height) else {
-            throw NaiveSelectionError.RegionMismatch
-        }
+//        guard (refRegion.width == otherRegion.width && refRegion.height == otherRegion.height) else {
+//            throw NaiveSelectionError.RegionMismatch
+//        }
         guard (self.skipSize >= 0) else {
             throw NaiveSelectionError.InvalidSkipSize
         }
