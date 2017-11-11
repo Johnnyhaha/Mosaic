@@ -64,10 +64,8 @@ class MosaicCreator {
     
     var compositeImage: UIImage {
         get {
-            UIGraphicsPushContext(self.compositeContext)
-            let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-            UIGraphicsPopContext()
-            return image
+            let cgImage = self.compositeContext.makeImage()!
+            return UIImage.init(cgImage: cgImage)
         }
     }
     init(reference: UIImage) {
@@ -117,8 +115,9 @@ class MosaicCreator {
                 self.gridSpacesFilled += 1
                     
                 UIGraphicsPushContext(self.compositeContext)
-                let drawRect = CGRect(x: Int(choice.region.topLeft.x), y: Int(choice.region.topLeft.y), width: choice.region.width, height: choice.region.height)
-                
+                let drawRect = CGRect(x: choice.position.col * Int(self._gridSizePotints) +  Int(choice.region.topLeft.x), y: choice.position.row * Int(self._gridSizePotints) +  Int(choice.region.topLeft.y), width: choice.region.width, height: choice.region.height)
+                print("drawing to \(drawRect)")
+                    
                 self.compositeContext.draw(choice.image.cgImage!, in: drawRect)
                 UIGraphicsPopContext()
                 return

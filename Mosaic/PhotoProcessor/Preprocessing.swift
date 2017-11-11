@@ -14,6 +14,7 @@ enum LibraryPreprocessingError: Error {
 }
 
 protocol LibraryPreprocessing {
+    
     func begin(complete: @escaping() -> Void) throws -> Void
     func progress() -> Int
 }

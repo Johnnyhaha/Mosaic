@@ -59,27 +59,27 @@ class MetalImageSelection: ImageSelection {
         //        var othRGB: (red: CGFloat, blue: CGFloat, green: CGFloat) = (0,0,0)
         
         //        遍历图片中每隔26个单位的一个像素点RGB的数值
-        for deltaY in stride(from: 0, to: refRegion.height - 1, by: 1 + self.skipSize) {
-            //            print("row \(deltaY+1)/\(refRegion.height) (current fit: \(fit))")
-            for deltaX in stride(from: 0, to: refRegion.width - 1, by: 1 + self.skipSize) {
-                //                图片中像素点的位置和颜色
-                let refPoint = CGPoint(x: Int(refRegion.topLeft.x) + deltaX, y: Int(refRegion.topLeft.y) + deltaY)
-                //                let refColor = self.referenceImage.getPixelColor(pos: refPoint)
-                
-                let otherPoint = CGPoint(x: Int(otherRegion.topLeft.x) + deltaX, y: Int(otherRegion.topLeft.y) + deltaY)
-                                fit += self.comparePoints(refPoint: refPoint, otherImage: otherImage, otherPoint: otherPoint)
-                //                let otherColor = otherImage.getPixelColor(pos: otherPoint)
-                //
-                //                refColor.getRed(&refRGB.red, green: &refRGB.green, blue: &refRGB.blue, alpha: nil)
-                //                otherColor.getRed(&othRGB.red, green: &othRGB.green, blue: &othRGB.blue, alpha: nil)
-                //                let redAbs = abs(refRGB.red - othRGB.red)
-                //                let blueAbs = abs(refRGB.blue - othRGB.blue)
-                //                let greenAbs = abs(refRGB.green - othRGB.green)
-                //                fit += redAbs + blueAbs + greenAbs
-                
-                //                fit += abs(refRGB.red - othRGB.red) + abs(refRGB.blue - othRGB.blue) + abs(refRGB.green - othRGB.green)
-            }
-        }
+//        for deltaY in stride(from: 0, to: refRegion.height - 1, by: 1 + self.skipSize) {
+//            //            print("row \(deltaY+1)/\(refRegion.height) (current fit: \(fit))")
+//            for deltaX in stride(from: 0, to: refRegion.width - 1, by: 1 + self.skipSize) {
+//                //                图片中像素点的位置和颜色
+//                let refPoint = CGPoint(x: Int(refRegion.topLeft.x) + deltaX, y: Int(refRegion.topLeft.y) + deltaY)
+//                //                let refColor = self.referenceImage.getPixelColor(pos: refPoint)
+//                
+//                let otherPoint = CGPoint(x: Int(otherRegion.topLeft.x) + deltaX, y: Int(otherRegion.topLeft.y) + deltaY)
+//                                fit += self.comparePoints(refPoint: refPoint, otherImage: otherImage, otherPoint: otherPoint)
+//                //                let otherColor = otherImage.getPixelColor(pos: otherPoint)
+//                //
+//                //                refColor.getRed(&refRGB.red, green: &refRGB.green, blue: &refRGB.blue, alpha: nil)
+//                //                otherColor.getRed(&othRGB.red, green: &othRGB.green, blue: &othRGB.blue, alpha: nil)
+//                //                let redAbs = abs(refRGB.red - othRGB.red)
+//                //                let blueAbs = abs(refRGB.blue - othRGB.blue)
+//                //                let greenAbs = abs(refRGB.green - othRGB.green)
+//                //                fit += redAbs + blueAbs + greenAbs
+//                
+//                //                fit += abs(refRGB.red - othRGB.red) + abs(refRGB.blue - othRGB.blue) + abs(refRGB.green - othRGB.green)
+//            }
+//        }
         return fit
     }
     

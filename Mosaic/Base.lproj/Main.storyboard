@@ -190,6 +190,9 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <viewLayoutGuide key="safeArea" id="Wm3-q3-UX5"/>
                     </view>
+                    <connections>
+                        <outlet property="compositePhoto" destination="5Ru-NU-ZuL" id="ZVX-R5-BGc"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fyD-31-dkg" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="umm-hT-Tu9" userLabel="Exit" sceneMemberID="exit"/>
