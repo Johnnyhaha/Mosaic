@@ -13,8 +13,8 @@ import UIKit
 struct ImageChoice {
     var position    : (row: Int, col: Int)
     var image       : UIImage
-    var topLeft     : (x: Int, y: Int)
-    var bottomRight : (x: Int, y: Int)
+    var region      : Region
+    var fit         : CGFloat // 相片匹配程度有多好 0最好    
 }
 
 enum ImageSelectionError: Error {

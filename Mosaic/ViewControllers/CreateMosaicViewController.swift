@@ -10,10 +10,38 @@ import UIKit
 
 class CreateMosaicViewController: UIViewController {
 
+    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var sizeSlider: UISlider!
+    @IBOutlet weak var qualitySlider: UISlider!
+    
+    var image: UIImage!
+    var mosaicCreator: MosaicCreator!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        imageView.image = image
+        mosaicCreator = MosaicCreator(reference: image)
+        
+        // 网格和质量滑块设置最大最小值 默认值
+        sizeSlider.minimumValue = Float(MosaicCreationConstants.gridSizeMin)
+        sizeSlider.maximumValue = Float(MosaicCreationConstants.gridSizeMax)
+        qualitySlider.minimumValue = Float(MosaicCreationConstants.qualityMin)
+        qualitySlider.maximumValue = Float(MosaicCreationConstants.qualityMax)
+        
+        let sizeSliderDefault = Float(MosaicCreationConstants.gridSizeMax - MosaicCreationConstants.gridSizeMin)/2
+        let qualitySliderDefault = Float(MosaicCreationConstants.qualityMax - MosaicCreationConstants.qualityMin)/2
+        
+        sizeSlider.value = sizeSliderDefault
+        qualitySlider.value = qualitySliderDefault
+        
+        do {
+            // 传递滑块默认值
+            try mosaicCreator.setQuality(quality: Int(qualitySliderDefault))
+            try mosaicCreator.setGridSizePoints(gridSizePoints: Int(sizeSliderDefault))
+        } catch {
+            print("Issue with initial setting of setting quality/grid size points.\n")
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -21,7 +49,34 @@ class CreateMosaicViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    // 网格大小改变
+    @IBAction func sizeChanged(_ sender: UISlider) {
+        let value = Int(sender.value)
+        do {
+            try mosaicCreator.setGridSizePoints(gridSizePoints: value)
+        } catch {
+            print("Error with setting grid size.\n")
+        }
+    }
+    
+    // 图片质量改变
+    @IBAction func qualityChanged(_ sender: UISlider) {
+        let value = Int(sender.value)
+        do {
+            try mosaicCreator.setQuality(quality: value)
+        } catch {
+            print("Error with setting quality.\n")
+        }
+    }
+    
+    // 创造合成图片
     @IBAction func creatCompositePhoto(_ sender: Any) {
+        print("Creating composite photo!")
+        do {
+            try mosaicCreator.begin()
+        } catch {
+            print("Error with calling mosaicCreator.begin.\n")
+        }
     }
     
     @IBAction func unwindToCreateMosaic(segue: UIStoryboardSegue, sender: Any?) {

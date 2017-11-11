@@ -13,6 +13,7 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
 
     // The Metal device we use to perform Metal operations
     var device: MTLDevice!
+    var pickedImage: UIImage!
     var imagePicker = UIImagePickerController()
     
     override func viewDidLoad() {
@@ -26,6 +27,7 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
         // Dispose of any resources that can be recreated.
     }
     
+    // 相册库中选择相片
     @IBAction func chooseImage(_ sender: UIButton) {
         
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
@@ -39,6 +41,7 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
         }
     }
     
+    // 摄像头拍摄获得相片
     @IBAction func takePicture(_ sender: UIButton) {
         
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
@@ -52,8 +55,10 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
         }
     }
     
+    // 退出选择相片界面 获得相片则转场
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+        if (info[UIImagePickerControllerOriginalImage]) != nil {
+            pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage 
             dismiss(animated: true, completion: {
                 self.performSegue(withIdentifier: "ChoosePhotoToCreateMosaic", sender: self)
             })
@@ -64,5 +69,14 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
     
     @IBAction func unwindBackToChoosePhoto(for: UIStoryboardSegue, sender: Any?) {
         
+    }
+    
+    // 转场传递图片
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ChoosePhotoToCreateMosaic" {
+            if let CreatMosaicViewContorller = segue.destination as? CreateMosaicViewController {
+                CreatMosaicViewContorller.image = pickedImage
+            }
+        }
     }
 }
