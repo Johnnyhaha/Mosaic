@@ -13,8 +13,13 @@ enum LibraryPreprocessingError: Error {
     case LibraryAccessIssue
 }
 
-protocol LibraryPreprocessing {
+protocol PhotoProcessor {
+    init(timer: MosaicCreationTimer)
+    var threadWidth: Int { get set }
+    func preprocess(complete : @escaping () -> Void) throws -> Void
+    func preprocessProgress() -> Int
     
-    func begin(complete: @escaping() -> Void) throws -> Void
+    func findNearestMatch(tpa: TenPointAverage) -> (String, Float)?
+//    func processPhoto(image: CGImage, synchronous: Bool, complete: @escaping (TenPointAverage?) throws -> Void) -> Void
     func progress() -> Int
 }

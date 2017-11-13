@@ -8,125 +8,212 @@
 
 import Foundation
 import UIKit
+import Photos
 
-// 代表图片区域
-class Region {
-    var topLeft:        CGPoint
-    var bottomRight:    CGPoint
-    
-    init(topLeft: CGPoint, bottomRight: CGPoint) {
-        self.topLeft = topLeft
-        self.bottomRight = bottomRight
-    }
-    
-    var height: Int {
-        get {
-            return Int(self.bottomRight.y - self.topLeft.y)
-        }
-    }
-    
-    var width: Int {
-        get {
-            return Int(self.bottomRight.x - self.topLeft.x)
-        }
-    }
+enum MosaicCreationState {
+    case NotStarted
+    case PreprocessingInProgress
+    case PreprocessingComplete
+    case InProgress
+    case Complete
 }
 
-// typealias 为已存在类型重新定义名字 一个是区域，一个是左上角和右下角点确定的区域
-typealias region = (topLeft: CGPoint, bottomRight: CGPoint)
-
-// 马赛克创造错误 预处理 质量、网格超出界限
+// 1无效状态 2图片质量大小超出范围 3图片网格大小超出范围
 enum MosaicCreationError: Error {
-    case MosaicCreationInProgress
+    case InvalidState
     case QualityOutOfBounds
     case GridSizeOutOfBounds
 }
 
-// 质量、网格边界值
 struct MosaicCreationConstants {
-    static let gridSizeMin = 10
-    static let gridSizeMax = 500
+    static let gridSizeMin = TenPointAverageConstants.gridsAcross
+    static let gridSizeMax = 75
     
-    static let qualityMin = 0
+    static let qualityMin = 1
     static let qualityMax = 100
 }
 
 class MosaicCreator {
-    private let imageSelector:  ImageSelection
-    private let reference:      UIImage
-    private var inProgress:     Bool
-    private var _gridSizePotints: Int = (MosaicCreationConstants.gridSizeMax + MosaicCreationConstants.gridSizeMin)/2
-    private var _quality: Int = (MosaicCreationConstants.qualityMax + MosaicCreationConstants.qualityMin)/2
-    private let compositeContext: CGContext
     
-    private var totalGridSpaces: Int
-    private var gridSpacesFilled: Int
+    var imageSelector : ImageSelection
+    var reference : UIImage
+    private var state : MosaicCreationState
+    private var _gridSizePoints : Int
+    private var _quality : Int = (MosaicCreationConstants.qualityMax + MosaicCreationConstants.qualityMin)/2
+    private var compositeContext: CGContext
+    var timer : MosaicCreationTimer
     
-    var compositeImage: UIImage {
+    private var totalGridSpaces : Int
+    private var gridSpacesFilled : Int
+    
+    var drawingThreads : Int
+    
+    var compositeImage : UIImage {
         get {
             let cgImage = self.compositeContext.makeImage()!
             return UIImage.init(cgImage: cgImage)
         }
     }
-    init(reference: UIImage) {
-        self.inProgress = false
-        self.reference = reference
-        self.imageSelector = NaiveImageSelection(refImage: reference)
+    
+    func updateReference(new: UIImage) {
+        
+        self.reference = new
         
         self.totalGridSpaces = 0
         self.gridSpacesFilled = 0
         
-        UIGraphicsBeginImageContextWithOptions(self.reference.size, true, 0.0)
+        self.imageSelector.updateRef(new: new)
+        
+        
+        UIGraphicsBeginImageContextWithOptions(self.reference.size, false, 0)
         self.compositeContext = UIGraphicsGetCurrentContext()!
         UIGraphicsPopContext()
+        
+        
+        do {
+            self._gridSizePoints = 0
+            try self.setGridSizePoints((MosaicCreationConstants.gridSizeMax + MosaicCreationConstants.gridSizeMin)/2)
+        } catch {
+            print("error initializing grid size")
+        }
+        
+    }
+    
+    // 4.对选择好的图片初始化： 未开始状态 马赛克创建时间---------------------------------------------
+    init(reference: UIImage) {
+        self.state = .NotStarted
+        self.reference = reference
+        self.timer = MosaicCreationTimer(enabled: false)
+        self.imageSelector = MetalImageSelection(refImage: reference, timer: self.timer)
+        
+        self.totalGridSpaces = 0
+        self.gridSpacesFilled = 0
+        self.drawingThreads = 1
+        
+        // 设置要创建图像的尺寸为所选择的图像尺寸
+        UIGraphicsBeginImageContextWithOptions(self.reference.size, false, 0)
+        // 返回当前图形上下文
+        self.compositeContext = UIGraphicsGetCurrentContext()!
+        // 从栈中删除顶部当前图形上下文，恢复先前的上下文。
+        UIGraphicsPopContext()
+        
+        
+        do {
+            self._gridSizePoints = 0
+            try self.setGridSizePoints((MosaicCreationConstants.gridSizeMax + MosaicCreationConstants.gridSizeMin)/2)
+        } catch {
+            print("error initializing grid size")
+        }
     }
     
     func getGridSizePoints() -> Int {
-        return self._gridSizePotints
+        return self._gridSizePoints
     }
-    // 设置网格
-    func setGridSizePoints(gridSizePoints: Int) throws {
-        guard (gridSizePoints >= MosaicCreationConstants.gridSizeMin && gridSizePoints <= MosaicCreationConstants.gridSizeMax) else {
-            throw MosaicCreationError.GridSizeOutOfBounds
+    // 检查网格大小是否超过范围
+    func setGridSizePoints(_ gridSizePoints : Int) throws {
+        guard (gridSizePoints >= MosaicCreationConstants.gridSizeMin &&
+            gridSizePoints <= MosaicCreationConstants.gridSizeMax) else {
+                throw MosaicCreationError.GridSizeOutOfBounds
         }
-        self._gridSizePotints = gridSizePoints
+        let spacesInRow = (MosaicCreationConstants.gridSizeMax - gridSizePoints) + 10
+        self._gridSizePoints = max(Int(min(self.reference.size.width, self.reference.size.height)) / spacesInRow, MosaicCreationConstants.gridSizeMin)
     }
     
     func getQuality() -> Int {
         return self._quality
     }
-    // 设置质量
+    // 检查图片质量是否超过范围
     func setQuality(quality: Int) throws {
-        guard (quality >= MosaicCreationConstants.qualityMin && quality <= MosaicCreationConstants.qualityMax) else {
-            throw MosaicCreationError.QualityOutOfBounds
+        guard (quality >= MosaicCreationConstants.qualityMin &&
+            quality <= MosaicCreationConstants.qualityMax) else {
+                throw MosaicCreationError.QualityOutOfBounds
         }
         self._quality = quality
     }
     
-    func begin() throws -> Void {
-        if (self.inProgress) {
-            throw MosaicCreationError.MosaicCreationInProgress
+    // 图片预处理
+    func preprocess(complete: @escaping () -> Void) throws -> Void {
+        if (self.state == .InProgress || self.state == .PreprocessingInProgress) {
+            throw MosaicCreationError.InvalidState
+        } else if (self.state == .PreprocessingComplete || self.state == .Complete) {
+            self.state = .PreprocessingComplete
+            complete()
         } else {
-            self.inProgress = true
-            self.totalGridSpaces = (Int(self.reference.size.width) / self._gridSizePotints) * (Int(self.reference.size.height) / self._gridSizePotints)
-            self.gridSpacesFilled = 0
-            try
-                self.imageSelector.select(gridSizePoints: self._gridSizePotints, quality: self._quality, onSelect: { (choice: ImageChoice) in
-                self.gridSpacesFilled += 1
-                    
-                UIGraphicsPushContext(self.compositeContext)
-                let drawRect = CGRect(x: choice.position.col * Int(self._gridSizePotints) +  Int(choice.region.topLeft.x), y: choice.position.row * Int(self._gridSizePotints) +  Int(choice.region.topLeft.y), width: choice.region.width, height: choice.region.height)
-                print("drawing to \(drawRect)")
-                    
-                self.compositeContext.draw(choice.image.cgImage!, in: drawRect)
-                UIGraphicsPopContext()
-                return
+            //Needs to preprocess
+            self.state = .PreprocessingInProgress
+            try self.imageSelector.preprocess(then: {() -> Void in
+                self.state = .PreprocessingComplete
+                print("done preprocessing. array:")
+                complete()
             })
         }
     }
     
+    func begin(tick : @escaping () -> Void, complete : @escaping () -> Void) throws -> Void {
+        
+        //        guard (self.state == .PreprocessingComplete || self.state == .Complete) else {
+        //            throw MosaicCreationError.InvalidState
+        //        }
+        
+        // step 记录任务的开始 停止 持续时间
+        let step = self.timer.task("Photo Mosaic Generation")
+        self.state = .InProgress
+        let numRows = Int(self.reference.size.height) / self._gridSizePoints
+        let numCols = Int(self.reference.size.width) / self._gridSizePoints
+        self.totalGridSpaces = numRows * numCols
+        self.gridSpacesFilled = 0
+        try self.imageSelector.select(gridSizePoints: self._gridSizePoints, numGridSpaces: self.totalGridSpaces, numRows: numRows, numCols: numCols, quality: self._quality, onSelect:
+        {(assetIds) -> Void in
+            step("Selecting nearest matches")
+            var assetData : [String : PHAsset] = [:]
+            let choiceAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetIds, options: nil)
+            choiceAssets.enumerateObjects({ (asset: PHAsset, index: Int, stop: UnsafeMutablePointer<ObjCBool>) in
+                assetData[asset.localIdentifier] = asset
+            })
+            
+            let imageManager = PHImageManager()
+            step("Retrieving Local Identifiers")
+            
+            var squaresComplete = 0
+            for threadIndex in 0 ..< self.drawingThreads {
+                DispatchQueue.global(qos: .userInitiated).async {
+                    for squareId in stride(from: threadIndex, to: numRows * numCols, by: self.drawingThreads) {
+                        let col = squareId % numCols
+                        let row = squareId / numCols
+                        let x = col * self._gridSizePoints
+                        let y = row * self._gridSizePoints
+                        
+                        //Make sure that we cover the whole image and don't go over!
+                        let rectWidth = min(Int(self.reference.size.width) - x, self._gridSizePoints)
+                        let rectHeight = min(Int(self.reference.size.height) - y, self._gridSizePoints)
+                        
+                        let targetSize = CGSize(width: rectWidth, height: rectHeight)
+                        let options = PHImageRequestOptions()
+                        imageManager.requestImage(for: assetData[assetIds[row*numCols + col]]!, targetSize: targetSize, contentMode: PHImageContentMode.default, options: options, resultHandler: {(result, info) -> Void in
+                            DispatchQueue.main.async {
+                                UIGraphicsPushContext(self.compositeContext)
+                                let drawRect = CGRect(x: x, y: y, width: Int(rectWidth), height: Int(rectHeight))
+                                result!.draw(in: drawRect)
+                                UIGraphicsPopContext()
+                                tick()
+                                squaresComplete += 1
+                                if (squaresComplete == numRows * numCols) {
+                                    step("Drawing onto Canvas")
+                                    self.state = .Complete
+                                    self.timer.complete(report: true)
+                                    complete()
+                                }
+                            }
+                        })
+                    }
+                }
+            }
+        })
+    }
+    
     func progress() -> Int {
-        if (!self.inProgress) { return 0 }
+        if (!(self.state == .InProgress)) {return 0}
         return Int(100.0 * (Float(self.gridSpacesFilled) / Float(self.totalGridSpaces)))
     }
 }
+

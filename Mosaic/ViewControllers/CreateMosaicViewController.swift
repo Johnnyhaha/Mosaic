@@ -13,6 +13,7 @@ class CreateMosaicViewController: UIViewController {
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var sizeSlider: UISlider!
     @IBOutlet weak var qualitySlider: UISlider!
+    @IBOutlet weak var goButton: UIButton!
     
     var image: UIImage!
     var mosaicCreator: MosaicCreator!
@@ -20,8 +21,19 @@ class CreateMosaicViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        imageView.contentMode = UIViewContentMode.scaleAspectFit // 图片填充模式
         imageView.image = image
+        // 3.传递图片进行预处理 马赛克制作---------------------------------------------
         mosaicCreator = MosaicCreator(reference: image)
+        
+        do {
+            //            如果预处理完成就显示goButton
+            try mosaicCreator.preprocess(complete: {
+                self.goButton.isHidden = false
+            })
+        } catch {
+            print("Call to preprocess caused an error.")
+        }
         
         // 网格和质量滑块设置最大最小值 默认值
         sizeSlider.minimumValue = Float(MosaicCreationConstants.gridSizeMin)

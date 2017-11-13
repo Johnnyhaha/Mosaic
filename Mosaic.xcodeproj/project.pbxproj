@@ -18,12 +18,17 @@
 		2D48B5841FB6EA98006A2777 /* Preprocessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D48B5831FB6EA98006A2777 /* Preprocessing.swift */; };
 		2D48B5861FB6EAB9006A2777 /* TenPointAveraging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D48B5851FB6EAB9006A2777 /* TenPointAveraging.swift */; };
 		2D8B1DD11FB46EE400242215 /* CreateMosaicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8B1DD01FB46EE400242215 /* CreateMosaicViewController.swift */; };
-		2D8B1DD31FB46EF600242215 /* OptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8B1DD21FB46EF600242215 /* OptionsViewController.swift */; };
 		2D8B1DD51FB46F1700242215 /* CompositePhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8B1DD41FB46F1700242215 /* CompositePhotoViewController.swift */; };
 		2D90AA301FB49A1800F90FA5 /* ImageSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D90AA2F1FB49A1800F90FA5 /* ImageSelection.swift */; };
 		2D90AA321FB49A4200F90FA5 /* MetalImageSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D90AA311FB49A4200F90FA5 /* MetalImageSelection.swift */; };
 		2D90AA341FB49A5E00F90FA5 /* MosicaCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D90AA331FB49A5E00F90FA5 /* MosicaCreator.swift */; };
 		2D90AA361FB49A7D00F90FA5 /* NaiveImageSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D90AA351FB49A7D00F90FA5 /* NaiveImageSelection.swift */; };
+		2DA6FC781FB9C1E600249460 /* TPAStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA6FC771FB9C1E600249460 /* TPAStorage.swift */; };
+		2DA6FC7A1FB9C20400249460 /* TPAArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA6FC791FB9C20400249460 /* TPAArray.swift */; };
+		2DA6FC7C1FB9C27300249460 /* MetalPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA6FC7B1FB9C27300249460 /* MetalPipeline.swift */; };
+		2DA6FC7E1FB9C38800249460 /* MosaicCreationTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA6FC7D1FB9C38800249460 /* MosaicCreationTimer.swift */; };
+		2DA6FC801FB9C3BE00249460 /* UIImageFixOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA6FC7F1FB9C3BE00249460 /* UIImageFixOrientation.swift */; };
+		2DA6FC821FB9CD6A00249460 /* TenPointAveraging.metal in Sources */ = {isa = PBXBuildFile; fileRef = 2DA6FC811FB9CD6A00249460 /* TenPointAveraging.metal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,12 +66,17 @@
 		2D48B5831FB6EA98006A2777 /* Preprocessing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preprocessing.swift; sourceTree = "<group>"; };
 		2D48B5851FB6EAB9006A2777 /* TenPointAveraging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TenPointAveraging.swift; sourceTree = "<group>"; };
 		2D8B1DD01FB46EE400242215 /* CreateMosaicViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMosaicViewController.swift; sourceTree = "<group>"; };
-		2D8B1DD21FB46EF600242215 /* OptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsViewController.swift; sourceTree = "<group>"; };
 		2D8B1DD41FB46F1700242215 /* CompositePhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositePhotoViewController.swift; sourceTree = "<group>"; };
 		2D90AA2F1FB49A1800F90FA5 /* ImageSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSelection.swift; sourceTree = "<group>"; };
 		2D90AA311FB49A4200F90FA5 /* MetalImageSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalImageSelection.swift; sourceTree = "<group>"; };
 		2D90AA331FB49A5E00F90FA5 /* MosicaCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosicaCreator.swift; sourceTree = "<group>"; };
 		2D90AA351FB49A7D00F90FA5 /* NaiveImageSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaiveImageSelection.swift; sourceTree = "<group>"; };
+		2DA6FC771FB9C1E600249460 /* TPAStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPAStorage.swift; sourceTree = "<group>"; };
+		2DA6FC791FB9C20400249460 /* TPAArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPAArray.swift; sourceTree = "<group>"; };
+		2DA6FC7B1FB9C27300249460 /* MetalPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalPipeline.swift; sourceTree = "<group>"; };
+		2DA6FC7D1FB9C38800249460 /* MosaicCreationTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MosaicCreationTimer.swift; sourceTree = "<group>"; };
+		2DA6FC7F1FB9C3BE00249460 /* UIImageFixOrientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageFixOrientation.swift; sourceTree = "<group>"; };
+		2DA6FC811FB9CD6A00249460 /* TenPointAveraging.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = TenPointAveraging.metal; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,7 +164,6 @@
 			children = (
 				2D0C34D21FB468FB0055F0A5 /* ChoosePhotoViewController.swift */,
 				2D8B1DD01FB46EE400242215 /* CreateMosaicViewController.swift */,
-				2D8B1DD21FB46EF600242215 /* OptionsViewController.swift */,
 				2D8B1DD41FB46F1700242215 /* CompositePhotoViewController.swift */,
 			);
 			path = ViewControllers;
@@ -163,8 +172,11 @@
 		2D0C34CF1FB461060055F0A5 /* PhotoProcessor */ = {
 			isa = PBXGroup;
 			children = (
-				2D48B5831FB6EA98006A2777 /* Preprocessing.swift */,
+				2DA6FC761FB9C1D100249460 /* TPAStorage */,
 				2D48B5851FB6EAB9006A2777 /* TenPointAveraging.swift */,
+				2DA6FC811FB9CD6A00249460 /* TenPointAveraging.metal */,
+				2D48B5831FB6EA98006A2777 /* Preprocessing.swift */,
+				2DA6FC7B1FB9C27300249460 /* MetalPipeline.swift */,
 			);
 			path = PhotoProcessor;
 			sourceTree = "<group>";
@@ -173,6 +185,8 @@
 			isa = PBXGroup;
 			children = (
 				2D90AA331FB49A5E00F90FA5 /* MosicaCreator.swift */,
+				2DA6FC7D1FB9C38800249460 /* MosaicCreationTimer.swift */,
+				2DA6FC7F1FB9C3BE00249460 /* UIImageFixOrientation.swift */,
 			);
 			path = MosaicCreation;
 			sourceTree = "<group>";
@@ -185,6 +199,15 @@
 				2D90AA351FB49A7D00F90FA5 /* NaiveImageSelection.swift */,
 			);
 			path = ImageSelection;
+			sourceTree = "<group>";
+		};
+		2DA6FC761FB9C1D100249460 /* TPAStorage */ = {
+			isa = PBXGroup;
+			children = (
+				2DA6FC771FB9C1E600249460 /* TPAStorage.swift */,
+				2DA6FC791FB9C20400249460 /* TPAArray.swift */,
+			);
+			path = TPAStorage;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -322,16 +345,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D90AA341FB49A5E00F90FA5 /* MosicaCreator.swift in Sources */,
+				2DA6FC781FB9C1E600249460 /* TPAStorage.swift in Sources */,
 				2D90AA321FB49A4200F90FA5 /* MetalImageSelection.swift in Sources */,
+				2DA6FC7C1FB9C27300249460 /* MetalPipeline.swift in Sources */,
 				2D8B1DD11FB46EE400242215 /* CreateMosaicViewController.swift in Sources */,
 				2D0C34A61FB456610055F0A5 /* Mosaic.xcdatamodeld in Sources */,
+				2DA6FC821FB9CD6A00249460 /* TenPointAveraging.metal in Sources */,
 				2D0C349E1FB456610055F0A5 /* AppDelegate.swift in Sources */,
 				2D8B1DD51FB46F1700242215 /* CompositePhotoViewController.swift in Sources */,
 				2D0C34D31FB468FB0055F0A5 /* ChoosePhotoViewController.swift in Sources */,
 				2D48B5841FB6EA98006A2777 /* Preprocessing.swift in Sources */,
+				2DA6FC801FB9C3BE00249460 /* UIImageFixOrientation.swift in Sources */,
 				2D90AA301FB49A1800F90FA5 /* ImageSelection.swift in Sources */,
+				2DA6FC7A1FB9C20400249460 /* TPAArray.swift in Sources */,
 				2D90AA361FB49A7D00F90FA5 /* NaiveImageSelection.swift in Sources */,
-				2D8B1DD31FB46EF600242215 /* OptionsViewController.swift in Sources */,
+				2DA6FC7E1FB9C38800249460 /* MosaicCreationTimer.swift in Sources */,
 				2D48B5861FB6EAB9006A2777 /* TenPointAveraging.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -504,7 +532,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Johnny.Mosaic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -519,7 +547,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Johnny.Mosaic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
