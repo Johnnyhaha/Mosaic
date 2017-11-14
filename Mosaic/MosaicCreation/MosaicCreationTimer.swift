@@ -23,7 +23,7 @@ class MosaicCreationTimer {
         self.tasks = [:]
     }
     
-    // 10.预处理的开始 结束 持续时间
+    // 1.预处理的开始 结束 持续时间
     func task(_ taskIdentifier: String) -> ((String) -> Void) {
         // 在这里有错误---------------------------------------
         self.tasks[taskIdentifier] = [("start", CFAbsoluteTimeGetCurrent(), 0)]

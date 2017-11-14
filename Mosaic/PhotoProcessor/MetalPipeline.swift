@@ -25,14 +25,15 @@ class MetalPipeline {
     
     init() {
         self.device = MTLCreateSystemDefaultDevice()! // 1支持Metal的系统默认设备
-        self.commandQueue = self.device.makeCommandQueue() // 2命令通过与 Metal 设备相关联的命令队列提交给 Metal 设备。命令队列以线程安全的方式接收命令并顺序执行
+        self.commandQueue = self.device.makeCommandQueue() // 2线程安全的渲染队列，可以支持多个 CommandBuffer 同时编码。
         self.library = self.device.newDefaultLibrary()! // 3在默认Metal库创建新库 构建渲染管道时将使用这个库
         
-        // 从库中通过名字来获取函数
+        // 通过名字获取函数  编译着色器shader
+        // 小相册KPA
         self.NinePointAverage = self.library.makeFunction(name: "findNinePointAverage")!
-        //图像KPA 9点平均计算功能
+        //参考照片KPA
         self.PhotoNinePointAverage = self.library.makeFunction(name: "findPhotoNinePointAverage")!
-        //查看相片和整个相片匹配功能
+        //匹配功能
         self.FindNearestMatches = self.library.makeFunction(name: "findNearestMatches")!
         // 创建设置了函数和像素格式的管道描述器
         do {
@@ -50,10 +51,13 @@ class MetalPipeline {
         return try textureLoader.newTexture(with: image)
     }
     
+    // 获取原始纹理
     private func getImageTextureRaw(image: CGImage) -> MTLTexture {
         let rawData = calloc(image.height * image.width * 4, MemoryLayout<UInt8>.size)
-        let bytesPerRow = 4 * image.width
+        let bytesPerRow = 4 * image.width // 每行的字节数
+        // 选择: 图像的透明度 和信息
         let options = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Big.rawValue
+        // 石英2D绘图环境
         let context = CGContext(
             data: rawData,
             width: image.width,
@@ -64,6 +68,7 @@ class MetalPipeline {
             bitmapInfo: options
         )
         
+//        draw方法绘制的图像是上下颠倒的
         context?.draw(image, in : CGRect(x:0, y: 0, width: image.width, height: image.height))
         let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(
             pixelFormat: .rgba8Unorm,
@@ -71,7 +76,7 @@ class MetalPipeline {
             height: image.height,
             mipmapped: true
         )
-        
+        // 纹理着色器
         let texture : MTLTexture = self.device.makeTexture(descriptor: textureDescriptor)
         texture.replace(region: MTLRegionMake2D(0, 0, image.width, image.height),
                         mipmapLevel: 0,
@@ -83,14 +88,16 @@ class MetalPipeline {
         return texture
     }
     
-    // 发布绘制指令
+    // 发布绘制图像指令
+//    先构造 MTLCommandBuffer ，再配置 CommandEncoder ，包括配置资源文件，渲染管线等，再通过 CommandEncoder 进行编码，最后才能提交到队列中去
     func processImageTexture(texture: MTLTexture, width: Int, height: Int, threadWidth: Int, complete : @escaping ([UInt32]) -> Void) {
         let commandBuffer = self.commandQueue.makeCommandBuffer() // 命令缓冲区
         let commandEncoder = commandBuffer.makeComputeCommandEncoder() // 命令编码器
-        //        在绘制指令之前，我们使用预编译的管道状态设置渲染命令编码器并建立缓冲区，该缓冲区将作为顶点着色器的参数
+// 在绘制指令之前，我们使用预编译的管道状态设置渲染命令编码器并建立缓冲区，该缓冲区将作为顶点着色器的参数-----------------
         commandEncoder.setComputePipelineState(self.pipelineState!)
         commandEncoder.setTexture(texture, at: 0)
         
+        // 为了真正的绘制几何图形，我们告诉 Metal 要绘制的形状 (三角形) 和缓冲区中顶点的数量
         let bufferCount = 3 * TenPointAverageConstants.numCells // 3*25
         let bufferLength = MemoryLayout<UInt32>.size * bufferCount // 缓冲区长度
         let resultBuffer = self.device.makeBuffer(length: bufferLength)
@@ -104,7 +111,7 @@ class MetalPipeline {
         params.storeBytes(of: UInt32(height), toByteOffset: 8, as: UInt32.self)
         let paramBuffer = self.device.makeBuffer(bytes: params, length: paramBufferLength, options: options)
         commandEncoder.setBuffer(paramBuffer, offset: 0, at: 1)
-        
+// --------------------------------------------------------------------------------------------
         
         let gridSize : MTLSize = MTLSize(width: 8, height: 1, depth: 1)
         let threadGroupSize : MTLSize = MTLSize(width: 32, height: 1, depth: 1)
@@ -114,7 +121,7 @@ class MetalPipeline {
             if (buffer.error != nil) {
                 print("There was an error completing an image texture: \(buffer.error!.localizedDescription)")
             } else {
-                //                为了真正的绘制几何图形，我们告诉 Metal 要绘制的形状 (三角形) 和缓冲区中顶点的数量
+                
                 let results : [UInt32] = Array(UnsafeBufferPointer(start: resultBuffer.contents().assumingMemoryBound(to: UInt32.self), count: bufferCount))
                 print("processImageTexture \(results)")
                 complete(results)
@@ -123,6 +130,7 @@ class MetalPipeline {
         commandBuffer.commit()
     }
     
+    // 处理所有相片的纹理
     func processEntirePhotoTexture(texture: MTLTexture, gridSize: Int, numGridSpaces: Int, rows: Int, cols: Int, threadWidth: Int, complete: @escaping ([UInt32]) -> Void) {
         let commandBuffer = self.commandQueue.makeCommandBuffer()
         let commandEncoder = commandBuffer.makeComputeCommandEncoder()
@@ -163,6 +171,8 @@ class MetalPipeline {
         })
         commandBuffer.commit()
     }
+    
+    
     
     func processNearestAverages(refTPAs: [UInt32], otherTPAs: [UInt32], rows: Int, cols: Int, threadWidth: Int, complete: @escaping([UInt32]) -> Void) {
         let commandBuffer = self.commandQueue.makeCommandBuffer()

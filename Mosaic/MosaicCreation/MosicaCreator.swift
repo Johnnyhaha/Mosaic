@@ -109,7 +109,7 @@ class MosaicCreator {
     func getGridSizePoints() -> Int {
         return self._gridSizePoints
     }
-    // 检查网格大小是否超过范围
+    //  设置网格
     func setGridSizePoints(_ gridSizePoints : Int) throws {
         guard (gridSizePoints >= MosaicCreationConstants.gridSizeMin &&
             gridSizePoints <= MosaicCreationConstants.gridSizeMax) else {
@@ -122,8 +122,8 @@ class MosaicCreator {
     func getQuality() -> Int {
         return self._quality
     }
-    // 检查图片质量是否超过范围
-    func setQuality(quality: Int) throws {
+    // 设置质量
+    func setQuality(_ quality: Int) throws {
         guard (quality >= MosaicCreationConstants.qualityMin &&
             quality <= MosaicCreationConstants.qualityMax) else {
                 throw MosaicCreationError.QualityOutOfBounds
@@ -131,7 +131,7 @@ class MosaicCreator {
         self._quality = quality
     }
     
-    // 图片预处理
+
     func preprocess(complete: @escaping () -> Void) throws -> Void {
         if (self.state == .InProgress || self.state == .PreprocessingInProgress) {
             throw MosaicCreationError.InvalidState
@@ -192,11 +192,14 @@ class MosaicCreator {
                         imageManager.requestImage(for: assetData[assetIds[row*numCols + col]]!, targetSize: targetSize, contentMode: PHImageContentMode.default, options: options, resultHandler: {(result, info) -> Void in
                             DispatchQueue.main.async {
                                 UIGraphicsPushContext(self.compositeContext)
+                                
                                 let drawRect = CGRect(x: x, y: y, width: Int(rectWidth), height: Int(rectHeight))
+                                
                                 result!.draw(in: drawRect)
                                 UIGraphicsPopContext()
                                 tick()
                                 squaresComplete += 1
+                                print(squaresComplete)
                                 if (squaresComplete == numRows * numCols) {
                                     step("Drawing onto Canvas")
                                     self.state = .Complete

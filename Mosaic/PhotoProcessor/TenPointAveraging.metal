@@ -20,26 +20,28 @@ using namespace metal;
  *
  * Note that while this method retains the naming from 9-Point averaging, it takes in a parameter
  * with the squaresInRow = sqrt(K) for K-Point averaging.
+ * 预处理 小相册的KPA计算
  */
 kernel void findNinePointAverage(
-                                 texture2d<float, access::read> image [[ texture(0) ]],
-                                 device uint* result [[ buffer(0) ]],
-                                 device uint* params [[ buffer(1) ]],
-                                 uint threadId [[ thread_position_in_grid ]],
-                                 uint numThreads [[ threads_per_grid ]]
-                                 ) {
+     texture2d<float, access::read> image [[ texture(0) ]],
+     device uint* result [[ buffer(0) ]],
+     device uint* params [[ buffer(1) ]],
+     uint threadId [[ thread_position_in_grid ]],
+     uint numThreads [[ threads_per_grid ]]
+     ) {
     float4 squareColor = float4(0.0, 0.0, 0.0, 0.0);
     
     const uint squaresInRow = params[0];
     const int imageWidth = params[1];
     const int imageHeight = params[2];
     
+    // 方块高与宽
     uint squareHeight = imageHeight / squaresInRow;
     uint squareWidth = imageWidth / squaresInRow;
     
     uint squareIndex = threadId;
     
-    
+    // < 5*5
     if (squareIndex < squaresInRow * squaresInRow) {
         uint squareRow = (squareIndex / squaresInRow);
         uint squareCol = squareIndex % squaresInRow;
@@ -47,7 +49,7 @@ kernel void findNinePointAverage(
         for (uint row = 0; row < squareHeight; row += 1) {
             uint pixelRow = squareHeight * squareRow + row;
             
-            //Now, process that row of the square.
+            //Now, process that row of the square.方块每行 像素
             for (uint delta = 0; delta < squareWidth; delta++) {
                 uint pixelCol = squareWidth * squareCol + delta;
                 uint2 coord = uint2(pixelCol, pixelRow);
@@ -75,13 +77,13 @@ kernel void findNinePointAverage(
  * with the squaresInRow = sqrt(K) for K-Point averaging.
  */
 kernel void findNinePointAverageAcrossThreadGroups(
-                                                   texture2d<float, access::read> image [[ texture(0) ]],
-                                                   device uint* result [[ buffer(0) ]],
-                                                   device uint* params [[ buffer(1) ]],
-                                                   uint threadId [[ thread_position_in_threadgroup ]],
-                                                   uint threadsInGroup [[ threads_per_threadgroup ]],
-                                                   uint threadGroupId [[ threadgroup_position_in_grid ]]
-                                                   ) {
+       texture2d<float, access::read> image [[ texture(0) ]],
+       device uint* result [[ buffer(0) ]],
+       device uint* params [[ buffer(1) ]],
+       uint threadId [[ thread_position_in_threadgroup ]],
+       uint threadsInGroup [[ threads_per_threadgroup ]],
+       uint threadGroupId [[ threadgroup_position_in_grid ]]
+       ) {
     threadgroup atomic_uint red;
     threadgroup atomic_uint green;
     threadgroup atomic_uint blue;
@@ -156,12 +158,12 @@ kernel void findNinePointAverageAcrossThreadGroups(
  * with the gridsAcross = sqrt(K) for K-Point averaging.
  */
 kernel void findPhotoNinePointAverage(
-                                      texture2d<float, access::read> image [[ texture(0) ]],
-                                      device uint* params [[ buffer(0) ]],
-                                      device uint* result [[ buffer(1) ]],
-                                      uint threadId [[ thread_position_in_grid ]],
-                                      uint numThreads [[ threads_per_grid ]]
-                                      ) {
+      texture2d<float, access::read> image [[ texture(0) ]],
+      device uint* params [[ buffer(0) ]],
+      device uint* result [[ buffer(1) ]],
+      uint threadId [[ thread_position_in_grid ]],
+      uint numThreads [[ threads_per_grid ]]
+      ) {
     
     const uint gridSize = params[0];
     const uint numRows = params[1];
@@ -207,13 +209,13 @@ kernel void findPhotoNinePointAverage(
  * with respect to the given TPA vectors.
  */
 kernel void findNearestMatches(
-                               device uint* refTPAs [[ buffer(0) ]],
-                               device uint* otherTPAs [[ buffer(1) ]],
-                               device uint* result  [[ buffer(2) ]],
-                               device uint* params  [[ buffer(3) ]],
-                               uint threadId [[ thread_position_in_grid ]],
-                               uint numThreads [[ threads_per_grid ]]
-                               ) {
+       device uint* refTPAs [[ buffer(0) ]],
+       device uint* otherTPAs [[ buffer(1) ]],
+       device uint* result  [[ buffer(2) ]],
+       device uint* params  [[ buffer(3) ]],
+       uint threadId [[ thread_position_in_grid ]],
+       uint numThreads [[ threads_per_grid ]]
+       ) {
     const int numCells = params[0];
     const int pointsPerTPA = numCells * 3;
     int refTPACount = params[1] / pointsPerTPA;

@@ -35,11 +35,12 @@ class RGBFloat : NSObject, NSCoding {
         }
     }
     
-    
+    // RGB值相差
     static func -(left: RGBFloat, right: RGBFloat) -> CGFloat {
         return abs(left.r-right.r) + abs(left.g-right.g) + abs(left.b-right.b)
     }
     
+    // RGB值相等
     static func ==(left: RGBFloat, right: RGBFloat) -> Bool {
         return left.r == right.r && left.g == right.g && left.b == right.b
     }
@@ -66,8 +67,8 @@ class RGBFloat : NSObject, NSCoding {
 //------------------------------------------------------------------------------
 
 
-// 二 相册库所有图片KPA计算部分------------------------------------------------------------------------
-// 将每一张图像分为25格，计算每格的平均RGB值，组成5*5*3的向量
+// 二 图片KPA的组成------------------------------------------------------------------------
+// 将每一张图像分为25格，计算每格的平均RGB值，组成5*5*3的向量  加上整张图片RGB平均值
 struct TenPointAverageConstants {
     static let gridsAcross = 5
     static let numCells = TenPointAverageConstants.gridsAcross * TenPointAverageConstants.gridsAcross
@@ -76,12 +77,13 @@ struct TenPointAverageConstants {
 class TenPointAverage : NSObject, NSCoding {
     var totalAvg : RGBFloat = RGBFloat(0,0,0) // 整张图片RGB平均值
     var gridAvg : [[RGBFloat]] = Array(repeating: Array(repeating: RGBFloat(0,0,0), count: TenPointAverageConstants.gridsAcross), count: TenPointAverageConstants.gridsAcross)
-    
+    // 25个小格组成的RGB平均值向量
     override init () {
         super.init()
         //Setup if necessary
     }
     
+    // 图片KPA值相差
     static func -(left: TenPointAverage, right: TenPointAverage) -> CGFloat {
         var diff : CGFloat = 0.0
         for row in 0 ..< TenPointAverageConstants.gridsAcross {
@@ -92,6 +94,7 @@ class TenPointAverage : NSObject, NSCoding {
         return sqrt(diff)
     }
     
+    // 图片KPA值相等
     static func ==(left: TenPointAverage, right: TenPointAverage) -> Bool {
         for i in 0 ..< TenPointAverageConstants.gridsAcross {
             for j in 0 ..< TenPointAverageConstants.gridsAcross {
@@ -118,7 +121,7 @@ class TenPointAverage : NSObject, NSCoding {
 //------------------------------------------------------------------------------
 
 
-// 三 相册库所有照片的预处理KPA计算部分----------------------------------------------------------------
+// 三 KPA计算处理部分----------------------------------------------------------------
 class TenPointAveraging: PhotoProcessor {
     private var inProgress : Bool
     static var storage : TPAArray = TPAArray()
@@ -129,7 +132,7 @@ class TenPointAveraging: PhotoProcessor {
     private var timer : MosaicCreationTimer
     static private var loadedFromFile : Bool = false
     var threadWidth : Int = 1
-    // 8.照片文件夹分配给十点平均图片管理文件夹 设置Metal线程---------------------------------------------
+    // 8.计算初始化 获得照片资源 设置Metal线程---------------------------------------------
     required init(timer: MosaicCreationTimer) {
         self.inProgress = false
         self.totalPhotos = 0
@@ -144,7 +147,7 @@ class TenPointAveraging: PhotoProcessor {
         }
     }
     
-    // 9.作品选择前 预处理
+    // 9.预处理
     func preprocess(complete: @escaping () -> Void) throws -> Void {
         guard (self.inProgress == false) else {
             print("预处理错误 LibraryProcessingError.PreprocessingInProgress \n")
@@ -166,6 +169,8 @@ class TenPointAveraging: PhotoProcessor {
                     userAlbumsOptions.predicate = NSPredicate(format: "estimatedAssetCount > 0")
                     let userAlbums = PHAssetCollection.fetchAssetCollections(with: PHAssetCollectionType.album, subtype: PHAssetCollectionSubtype.albumSyncedAlbum, options: userAlbumsOptions)
                     step("Fetching albums.")
+                    
+                    // 预处理: 存储相册库所有照片的KPA值-------------------------------
                     self.processAllPhotos(userAlbums: userAlbums, complete: {(changed: Bool) -> Void in
                         step("Processing photos")
                         //Save to file
@@ -188,12 +193,14 @@ class TenPointAveraging: PhotoProcessor {
         }
     }
     
+    // 内存中查找与选择图片最匹配的图片
     func findNearestMatch(tpa: TenPointAverage) -> (String, Float)? {
         return TenPointAveraging.storage.findNearestMatch(to: tpa)
     }
     
     func findNearestMatches(results: [UInt32], rows: Int, cols: Int, complete: @escaping ([String]) -> Void) -> Void {
         TenPointAveraging.metal!.processNearestAverages(refTPAs: results, otherTPAs: TenPointAveraging.storage.tpaData, rows: rows, cols: cols, threadWidth: 32, complete: {(matchIndexes) -> Void in
+            // map 返回最匹配的图像的KPA索引
             complete(matchIndexes.map({(tpaIndex) -> String in
                 return TenPointAveraging.storage.tpaIds[Int(tpaIndex)]
             }))
@@ -201,7 +208,7 @@ class TenPointAveraging: PhotoProcessor {
     }
     
     
-    // 2.1作品选择前 预处理
+    // 预处理: 存储相册库所有照片的KPA值
     private func processAllPhotos(userAlbums: PHFetchResult<PHAssetCollection>, complete: @escaping (_ changed: Bool) -> Void) {
         var changed: Bool = false
         //从头到尾预处理图片 PHAssetCollection: 一组代表性的相册 albumIndex: 相片的索引 序列号
@@ -212,39 +219,45 @@ class TenPointAveraging: PhotoProcessor {
             self.totalPhotos = fetchResult.count
             self.photosComplete = 0
             
+            // 计算照片KPA存储数量
             func step() {
                 self.photosComplete += 1
                 // 查看预处理完成的照片与所有照片的数量
                 print("完成照片\(self.photosComplete)/所有照片\(self.totalPhotos)")
                 if (self.photosComplete == self.totalPhotos) {
+                    // 完成所有照片，结束预处理
                     self.inProgress = false
                     complete(changed)
                 }
             }
             
             fetchResult.enumerateObjects({(asset: PHAsset, index: Int, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
+                // 资源为相片且KPA值未存储
                 if (asset.mediaType == .image && !TenPointAveraging.storage.isMember(asset.localIdentifier)) {
                     //Asynchronously grab image and save the values.
-                    changed = true
+                    changed = true // 异步获取图片且保存值
                     let options = PHImageRequestOptions()
                     // 同步处理请求
                     options.isSynchronous = true
                     // 自动释放池
                     let _ = autoreleasepool {
-                        TenPointAveraging.imageManager?.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: PHImageContentMode.default, options: options,
-                                                                     resultHandler: {(result, info) -> Void in
-                                                                        if (result != nil) {
-                                                                            //
-                                                                            self.processPhoto(image: result!.cgImage!, synchronous: true, complete: {(tpa) -> Void in
-                                                                                if (tpa != nil) {
-                                                                                    // 存储KPA向量值
-                                                                                    TenPointAveraging.storage.insert(asset: asset.localIdentifier, tpa: tpa!)
-                                                                                }
-                                                                                step()
-                                                                            })
-                                                                        } else {
-                                                                            step()
-                                                                        }
+                        TenPointAveraging.imageManager?.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: PHImageContentMode.default, options: options,resultHandler: {(result, info) -> Void in
+                            if (result != nil) {
+                                //计算每一格的KPA平均值
+                                self.processPhoto(image: result!.cgImage!, synchronous: true, complete: {(tpa) -> Void in
+                                    if (tpa != nil) {
+                                        
+                                        // I add---------------
+                                        self.preprocessProgress()
+                                        // 存储KPA向量值----------------------------
+                                        TenPointAveraging.storage.insert(asset: asset.localIdentifier, tpa: tpa!)
+                                        print(1)
+                                    }
+                                    step()
+                                })
+                            } else {
+                                step()
+                            }
                         })
                     }
                 } else {
@@ -254,6 +267,7 @@ class TenPointAveraging: PhotoProcessor {
         })
     }
     
+    //计算每一格的KPA平均值
     func processPhoto(image: CGImage, synchronous: Bool, complete: @escaping (TenPointAverage?) throws -> Void) -> Void {
         //Computes the average
         var texture : MTLTexture? = nil // 在GPU中存储图像数据
@@ -269,6 +283,7 @@ class TenPointAveraging: PhotoProcessor {
             }
         }
         if (texture != nil) {
+            print("开始计算相册库照片KPA平均值")
             // 处理图像纹理
             TenPointAveraging.metal?.processImageTexture(texture: texture!, width: image.width, height: image.height, threadWidth: self.threadWidth, complete: {(result : [UInt32]) -> Void in
                 let tba = TenPointAverage() // 5x5x3维RGB值
@@ -277,9 +292,11 @@ class TenPointAveraging: PhotoProcessor {
                     let index = i * 3
                     let row = i / TenPointAverageConstants.gridsAcross // gridsAcross: 5
                     let col = i % TenPointAverageConstants.gridsAcross
+                    // 图像的总平均RGB值
                     tba.totalAvg.r += CGFloat(result[index])/CGFloat(TenPointAverageConstants.numCells)
                     tba.totalAvg.g += CGFloat(result[index+1])/CGFloat(TenPointAverageConstants.numCells)
                     tba.totalAvg.b += CGFloat(result[index+2])/CGFloat(TenPointAverageConstants.numCells)
+                    // 图像的每格的平均RGB值
                     tba.gridAvg[row][col] = RGBFloat(CGFloat(Int(result[index])), CGFloat(Int(result[index+1])), CGFloat(Int(result[index+2])))
                 }
                 do {

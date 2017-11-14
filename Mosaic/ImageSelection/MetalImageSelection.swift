@@ -55,7 +55,7 @@ class MetalImageSelection: ImageSelection {
     private func findBestMatch(row: Int, col: Int, squareIndex: Int, refRegion: CGRect, tpaPoints: [UInt32], onSelect : @escaping (ImageChoice) -> Void) {
         var step : ((String) -> Void)? = nil
         if (row == 0 && col == 0) {
-            //图片中的什么位置和区域找到最匹配的图片
+            //图片中的什么位置和区域找到最匹配的图片的时间
             step = self.timer.task("Finding Best Match (\(row), \(col))")
         }
         // 处理资源
@@ -72,13 +72,13 @@ class MetalImageSelection: ImageSelection {
         let targetSize = CGSize(width: refRegion.width, height: refRegion.height)
         let options = PHImageRequestOptions()
         let chosenAsset = PHAsset.fetchAssets(withLocalIdentifiers: [bestFit], options: PHFetchOptions()).firstObject!
-        self.imageManager.requestImage(for: chosenAsset, targetSize: targetSize, contentMode: PHImageContentMode.default, options: options,
-                                       resultHandler: {(result, info) -> Void in
-                                        let choiceRegion = CGRect(x: 0, y: 0, width: Int(refRegion.width), height: Int(refRegion.height))
-                                        let choice = ImageChoice(position: (row:row,col:col), image: result!, region: choiceRegion, fit: CGFloat(bestDiff))
-                                        step?("fetching scaled image data")
-                                        onSelect(choice)
-                                        step?("drawing on canvas")
+        self.imageManager.requestImage(for: chosenAsset, targetSize: targetSize, contentMode: PHImageContentMode.default, options: options, resultHandler: {(result, info) -> Void in
+            let choiceRegion = CGRect(x: 0, y: 0, width: Int(refRegion.width), height: Int(refRegion.height))
+            // 在选择的区域镶嵌填入照片
+            let choice = ImageChoice(position: (row:row,col:col), image: result!, region: choiceRegion, fit: CGFloat(bestDiff))
+            step?("fetching scaled image data")
+            onSelect(choice)
+            step?("drawing on canvas")
         })
         
     }
@@ -115,7 +115,7 @@ class MetalImageSelection: ImageSelection {
         let texture = try TenPointAveraging.metal!.getImageTexture(image: self.refCGImage)
         TenPointAveraging.metal!.processEntirePhotoTexture(texture: texture, gridSize: gridSizePoints, numGridSpaces: numGridSpaces, rows: numRows, cols: numCols,  threadWidth: 32, complete: {(results) -> Void in
             print("finding nearest matches...")
-            //            print(results)
+                        print(results)
             self.tpa.findNearestMatches(results: results, rows: numRows, cols: numCols, complete: onSelect)
 //            let numRows : Int = Int(self.referenceImage.size.height) / gridSizePoints
 //            let numCols : Int = Int(self.referenceImage.size.width) / gridSizePoints

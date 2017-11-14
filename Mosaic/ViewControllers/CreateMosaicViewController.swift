@@ -23,6 +23,7 @@ class CreateMosaicViewController: UIViewController {
 
         imageView.contentMode = UIViewContentMode.scaleAspectFit // 图片填充模式
         imageView.image = image
+        goButton.isHidden = true
         // 3.传递图片进行预处理 马赛克制作---------------------------------------------
         mosaicCreator = MosaicCreator(reference: image)
         
@@ -49,8 +50,8 @@ class CreateMosaicViewController: UIViewController {
         
         do {
             // 传递滑块默认值
-            try mosaicCreator.setQuality(quality: Int(qualitySliderDefault))
-            try mosaicCreator.setGridSizePoints(gridSizePoints: Int(sizeSliderDefault))
+            try mosaicCreator.setQuality(Int(qualitySliderDefault))
+            try mosaicCreator.setGridSizePoints(Int(sizeSliderDefault))
         } catch {
             print("Issue with initial setting of setting quality/grid size points.\n")
         }
@@ -65,7 +66,7 @@ class CreateMosaicViewController: UIViewController {
     @IBAction func sizeChanged(_ sender: UISlider) {
         let value = Int(sender.value)
         do {
-            try mosaicCreator.setGridSizePoints(gridSizePoints: value)
+            try mosaicCreator.setGridSizePoints(value)
         } catch {
             print("Error with setting grid size.\n")
         }
@@ -75,7 +76,7 @@ class CreateMosaicViewController: UIViewController {
     @IBAction func qualityChanged(_ sender: UISlider) {
         let value = Int(sender.value)
         do {
-            try mosaicCreator.setQuality(quality: value)
+            try mosaicCreator.setQuality(value)
         } catch {
             print("Error with setting quality.\n")
         }
