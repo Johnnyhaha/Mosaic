@@ -2,7 +2,7 @@
 //  MetalPipeline.swift
 //  Mosaic
 //
-//  Created by Johnny_L on 2017/11/13.
+//  Created by Johnny_L on 2017/11/15.
 //  Copyright © 2017年 Johnny_L. All rights reserved.
 //
 
@@ -17,6 +17,7 @@ class MetalPipeline {
     let commandQueue : MTLCommandQueue
     let library: MTLLibrary
     let NinePointAverage : MTLFunction
+    let NinePointAverageAcrossThreadGroups : MTLFunction
     let PhotoNinePointAverage : MTLFunction
     let FindNearestMatches : MTLFunction
     var pipelineState : MTLComputePipelineState? = nil
@@ -31,6 +32,7 @@ class MetalPipeline {
         // 通过名字获取函数  编译着色器shader
         // 小相册KPA
         self.NinePointAverage = self.library.makeFunction(name: "findNinePointAverage")!
+        self.NinePointAverageAcrossThreadGroups = self.library.makeFunction(name: "findNinePointAverageAcrossThreadGroups")!
         //参考照片KPA
         self.PhotoNinePointAverage = self.library.makeFunction(name: "findPhotoNinePointAverage")!
         //匹配功能
@@ -38,6 +40,7 @@ class MetalPipeline {
         // 创建设置了函数和像素格式的管道描述器
         do {
             self.pipelineState = try self.device.makeComputePipelineState(function: self.NinePointAverage)
+            self.pipelineState = try self.device.makeComputePipelineState(function: self.NinePointAverageAcrossThreadGroups)
             self.photoPipelineState = try self.device.makeComputePipelineState(function: self.PhotoNinePointAverage)
             self.matchesPipelineState = try self.device.makeComputePipelineState(function: self.FindNearestMatches)
         } catch {
@@ -68,7 +71,7 @@ class MetalPipeline {
             bitmapInfo: options
         )
         
-//        draw方法绘制的图像是上下颠倒的
+        //        draw方法绘制的图像是上下颠倒的
         context?.draw(image, in : CGRect(x:0, y: 0, width: image.width, height: image.height))
         let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(
             pixelFormat: .rgba8Unorm,
@@ -89,16 +92,16 @@ class MetalPipeline {
     }
     
     // 发布绘制图像指令
-//    先构造 MTLCommandBuffer ，再配置 CommandEncoder ，包括配置资源文件，渲染管线等，再通过 CommandEncoder 进行编码，最后才能提交到队列中去
+    //    先构造 MTLCommandBuffer ，再配置 CommandEncoder ，包括配置资源文件，渲染管线等，再通过 CommandEncoder 进行编码，最后才能提交到队列中去
     func processImageTexture(texture: MTLTexture, width: Int, height: Int, threadWidth: Int, complete : @escaping ([UInt32]) -> Void) {
         let commandBuffer = self.commandQueue.makeCommandBuffer() // 命令缓冲区
         let commandEncoder = commandBuffer.makeComputeCommandEncoder() // 命令编码器
-// 在绘制指令之前，我们使用预编译的管道状态设置渲染命令编码器并建立缓冲区，该缓冲区将作为顶点着色器的参数-----------------
+        // 在绘制指令之前，我们使用预编译的管道状态设置渲染命令编码器并建立缓冲区，该缓冲区将作为顶点着色器的参数-----------------
         commandEncoder.setComputePipelineState(self.pipelineState!)
         commandEncoder.setTexture(texture, at: 0)
         
         // 为了真正的绘制几何图形，我们告诉 Metal 要绘制的形状 (三角形) 和缓冲区中顶点的数量
-        let bufferCount = 3 * TenPointAverageConstants.numCells // 3*25
+        let bufferCount = 3 * KPointAverageConstants.numCells // 3*25
         let bufferLength = MemoryLayout<UInt32>.size * bufferCount // 缓冲区长度
         let resultBuffer = self.device.makeBuffer(length: bufferLength)
         commandEncoder.setBuffer(resultBuffer, offset: 0, at: 0)
@@ -106,12 +109,12 @@ class MetalPipeline {
         let paramBufferLength = MemoryLayout<UInt32>.size * 3;
         let options = MTLResourceOptions()
         let params = UnsafeMutableRawPointer.allocate(bytes: paramBufferLength, alignedTo: 1)
-        params.storeBytes(of: UInt32(TenPointAverageConstants.gridsAcross), toByteOffset: 0, as: UInt32.self)
+        params.storeBytes(of: UInt32(KPointAverageConstants.gridsAcross), toByteOffset: 0, as: UInt32.self)
         params.storeBytes(of: UInt32(width), toByteOffset: 4, as: UInt32.self)
         params.storeBytes(of: UInt32(height), toByteOffset: 8, as: UInt32.self)
         let paramBuffer = self.device.makeBuffer(bytes: params, length: paramBufferLength, options: options)
         commandEncoder.setBuffer(paramBuffer, offset: 0, at: 1)
-// --------------------------------------------------------------------------------------------
+        // --------------------------------------------------------------------------------------------
         
         let gridSize : MTLSize = MTLSize(width: 8, height: 1, depth: 1)
         let threadGroupSize : MTLSize = MTLSize(width: 32, height: 1, depth: 1)
@@ -144,12 +147,12 @@ class MetalPipeline {
         params.storeBytes(of: UInt32(gridSize), as: UInt32.self)
         params.storeBytes(of: UInt32(rows), toByteOffset: 4, as: UInt32.self)
         params.storeBytes(of: UInt32(cols), toByteOffset: 8, as: UInt32.self)
-        params.storeBytes(of: UInt32(TenPointAverageConstants.gridsAcross), toByteOffset: 12, as: UInt32.self)
+        params.storeBytes(of: UInt32(KPointAverageConstants.gridsAcross), toByteOffset: 12, as: UInt32.self)
         let paramBuffer = self.device.makeBuffer(bytes: params, length: paramBufferLength, options: options)
         commandEncoder.setBuffer(paramBuffer, offset: 0, at: 0)
         
         
-        let bufferCount = 3 * TenPointAverageConstants.numCells * numGridSpaces
+        let bufferCount = 3 * KPointAverageConstants.numCells * numGridSpaces
         let bufferLength = MemoryLayout<UInt32>.size * bufferCount
         let resultBuffer = self.device.makeBuffer(length: bufferLength)
         commandEncoder.setBuffer(resultBuffer, offset: 0, at: 1)
@@ -193,7 +196,7 @@ class MetalPipeline {
         let params = UnsafeMutableRawPointer.allocate(bytes: MemoryLayout<UInt32>.size, alignedTo: 1)
         //        print("params: [\(refTPAs.count), \(otherTPAs.count)]")
         print("making params")
-        params.storeBytes(of: UInt32(TenPointAverageConstants.numCells), as: UInt32.self)
+        params.storeBytes(of: UInt32(KPointAverageConstants.numCells), as: UInt32.self)
         params.storeBytes(of: UInt32(refTPAs.count), toByteOffset: 4, as: UInt32.self)
         params.storeBytes(of: UInt32(otherTPAs.count), toByteOffset: 8, as: UInt32.self)
         params.storeBytes(of: UInt32(cols), toByteOffset: 12, as: UInt32.self)
