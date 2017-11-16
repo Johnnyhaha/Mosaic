@@ -13,7 +13,7 @@ class CompositePhotoViewController: UIViewController {
     @IBOutlet weak var compositePhoto: UIImageView!
     @IBOutlet weak var saveButton: UIBarButtonItem!
     
-//    var mosaicCreator: MosaicCreator!
+    var mosaicCreator: MosaicCreator!
     var compositePhotoImage: UIImage = UIImage()
     var canSavePhoto = false
     var results: [UIImage] = []
@@ -22,8 +22,8 @@ class CompositePhotoViewController: UIViewController {
         super.viewDidAppear(animated)
         print("beginning mosaic")
         self.compositePhoto.contentMode = UIViewContentMode.scaleAspectFit
-//        self.compositePhotoImage = self.mosaicCreator.compositeImage
-//        self.compositePhoto.image = self.compositePhotoImage
+        self.compositePhotoImage = self.mosaicCreator.compositeImage
+        self.compositePhoto.image = self.compositePhotoImage
         
 //        do {
 //            var lastRefresh : CFAbsoluteTime = 0

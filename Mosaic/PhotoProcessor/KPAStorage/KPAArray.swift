@@ -8,7 +8,7 @@
 
 import Foundation
 
-class KPAArray: NSObject, KPAStorage, NSCoding {
+class KPAArray: NSObject, NSCoding {
     var pLiskpath : String = "array.plist"
     private var assets: Set<String>
     var kpaIds: [String]

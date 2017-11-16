@@ -16,9 +16,9 @@ class MetalPipeline {
     let device : MTLDevice
     let commandQueue : MTLCommandQueue
     let library: MTLLibrary
-    let NinePointAverage : MTLFunction
-    let NinePointAverageAcrossThreadGroups : MTLFunction
-    let PhotoNinePointAverage : MTLFunction
+    let KPointAverage : MTLFunction
+    let KPointAverageAcrossThreadGroups : MTLFunction
+    let PhotoKPointAverage : MTLFunction
     let FindNearestMatches : MTLFunction
     var pipelineState : MTLComputePipelineState? = nil
     var photoPipelineState : MTLComputePipelineState? = nil
@@ -31,17 +31,17 @@ class MetalPipeline {
         
         // 通过名字获取函数  编译着色器shader
         // 小相册KPA
-        self.NinePointAverage = self.library.makeFunction(name: "findNinePointAverage")!
-        self.NinePointAverageAcrossThreadGroups = self.library.makeFunction(name: "findNinePointAverageAcrossThreadGroups")!
+        self.KPointAverage = self.library.makeFunction(name: "findKPointAverage")!
+        self.KPointAverageAcrossThreadGroups = self.library.makeFunction(name: "findKPointAverageAcrossThreadGroups")!
         //参考照片KPA
-        self.PhotoNinePointAverage = self.library.makeFunction(name: "findPhotoNinePointAverage")!
+        self.PhotoKPointAverage = self.library.makeFunction(name: "findPhotoKPointAverage")!
         //匹配功能
         self.FindNearestMatches = self.library.makeFunction(name: "findNearestMatches")!
         // 创建设置了函数和像素格式的管道描述器
         do {
-            self.pipelineState = try self.device.makeComputePipelineState(function: self.NinePointAverage)
-            self.pipelineState = try self.device.makeComputePipelineState(function: self.NinePointAverageAcrossThreadGroups)
-            self.photoPipelineState = try self.device.makeComputePipelineState(function: self.PhotoNinePointAverage)
+            self.pipelineState = try self.device.makeComputePipelineState(function: self.KPointAverage)
+            self.pipelineState = try self.device.makeComputePipelineState(function: self.KPointAverageAcrossThreadGroups)
+            self.photoPipelineState = try self.device.makeComputePipelineState(function: self.PhotoKPointAverage)
             self.matchesPipelineState = try self.device.makeComputePipelineState(function: self.FindNearestMatches)
         } catch {
             print("Error initializing pipeline state!")
@@ -165,7 +165,7 @@ class MetalPipeline {
         commandEncoder.endEncoding()
         commandBuffer.addCompletedHandler({(buffer) -> Void in
             if (buffer.error != nil) {
-                print("There was an error finding the TPA of the reference photo: \(buffer.error!.localizedDescription)")
+                print("There was an error finding the KPA of the reference photo: \(buffer.error!.localizedDescription)")
             } else {
                 let results : [UInt32] = Array(UnsafeBufferPointer(start: resultBuffer.contents().assumingMemoryBound(to: UInt32.self), count: bufferCount))
                 print("processEntirePhotoTexture \(results)")
@@ -177,16 +177,16 @@ class MetalPipeline {
     
     
     
-    func processNearestAverages(refTPAs: [UInt32], otherTPAs: [UInt32], rows: Int, cols: Int, threadWidth: Int, complete: @escaping([UInt32]) -> Void) {
+    func processNearestAverages(refKPAs: [UInt32], otherKPAs: [UInt32], rows: Int, cols: Int, threadWidth: Int, complete: @escaping([UInt32]) -> Void) {
         let commandBuffer = self.commandQueue.makeCommandBuffer()
         let commandEncoder = commandBuffer.makeComputeCommandEncoder()
         commandEncoder.setComputePipelineState(self.matchesPipelineState!)
         
-        let refBuffer = self.device.makeBuffer(bytes: UnsafeRawPointer(refTPAs), length: MemoryLayout<UInt32>.size * refTPAs.count)
+        let refBuffer = self.device.makeBuffer(bytes: UnsafeRawPointer(refKPAs), length: MemoryLayout<UInt32>.size * refKPAs.count)
         commandEncoder.setBuffer(refBuffer, offset: 0, at: 0)
         
-        let tpaBuffer = self.device.makeBuffer(bytes: UnsafeRawPointer(otherTPAs), length: MemoryLayout<UInt32>.size * otherTPAs.count)
-        commandEncoder.setBuffer(tpaBuffer, offset: 0, at: 1)
+        let KPABuffer = self.device.makeBuffer(bytes: UnsafeRawPointer(otherKPAs), length: MemoryLayout<UInt32>.size * otherKPAs.count)
+        commandEncoder.setBuffer(KPABuffer, offset: 0, at: 1)
         
         let resultBufferLength = MemoryLayout<UInt32>.size * rows * cols
         let resultBuffer = self.device.makeBuffer(length: resultBufferLength)
@@ -194,11 +194,11 @@ class MetalPipeline {
         
         let paramBufferLength = MemoryLayout<UInt32>.size * 4;
         let params = UnsafeMutableRawPointer.allocate(bytes: MemoryLayout<UInt32>.size, alignedTo: 1)
-        //        print("params: [\(refTPAs.count), \(otherTPAs.count)]")
+        //        print("params: [\(refKPAs.count), \(otherKPAs.count)]")
         print("making params")
         params.storeBytes(of: UInt32(KPointAverageConstants.numCells), as: UInt32.self)
-        params.storeBytes(of: UInt32(refTPAs.count), toByteOffset: 4, as: UInt32.self)
-        params.storeBytes(of: UInt32(otherTPAs.count), toByteOffset: 8, as: UInt32.self)
+        params.storeBytes(of: UInt32(refKPAs.count), toByteOffset: 4, as: UInt32.self)
+        params.storeBytes(of: UInt32(otherKPAs.count), toByteOffset: 8, as: UInt32.self)
         params.storeBytes(of: UInt32(cols), toByteOffset: 12, as: UInt32.self)
         let paramBuffer = self.device.makeBuffer(bytes: params, length: paramBufferLength)
         commandEncoder.setBuffer(paramBuffer, offset: 0, at: 3)
@@ -211,7 +211,7 @@ class MetalPipeline {
         
         commandBuffer.addCompletedHandler({(buffer) -> Void in
             if (buffer.error != nil) {
-                print("There was an error completing the TPA matching: \(buffer.error!.localizedDescription)")
+                print("There was an error completing the KPA matching: \(buffer.error!.localizedDescription)")
             } else {
                 let results : [UInt32] = Array(UnsafeBufferPointer(start: resultBuffer.contents().assumingMemoryBound(to: UInt32.self), count: rows * cols))
                 complete(results)

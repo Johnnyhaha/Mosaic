@@ -16,7 +16,8 @@ class CreateMosaicViewController: UIViewController {
     @IBOutlet weak var goButton: UIButton!
     
     var image: UIImage!
-//    var mosaicCreator: MosaicCreator!
+    var mosaicCreator: MosaicCreator!
+    var prepro: KPointAveraging = KPointAveraging()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,36 +26,36 @@ class CreateMosaicViewController: UIViewController {
         imageView.image = image
         goButton.isHidden = true
         // 3.传递图片进行预处理 马赛克制作---------------------------------------------
-//        mosaicCreator = MosaicCreator(reference: image)
-//
-//        do {
-//            //            如果预处理完成就显示goButton
-//            try mosaicCreator.preprocess(complete: {
-//                self.goButton.isHidden = false
-//            })
-//        } catch {
-//            print("Call to preprocess caused an error.")
-//        }
-//
-//        // 网格和质量滑块设置最大最小值 默认值
-//        sizeSlider.minimumValue = Float(MosaicCreationConstants.gridSizeMin)
-//        sizeSlider.maximumValue = Float(MosaicCreationConstants.gridSizeMax)
-//        qualitySlider.minimumValue = Float(MosaicCreationConstants.qualityMin)
-//        qualitySlider.maximumValue = Float(MosaicCreationConstants.qualityMax)
-//
-//        let sizeSliderDefault = Float(MosaicCreationConstants.gridSizeMax - MosaicCreationConstants.gridSizeMin)/2
-//        let qualitySliderDefault = Float(MosaicCreationConstants.qualityMax - MosaicCreationConstants.qualityMin)/2
-//
-//        sizeSlider.value = sizeSliderDefault
-//        qualitySlider.value = qualitySliderDefault
-//
-//        do {
-//            // 传递滑块默认值
-//            try mosaicCreator.setQuality(Int(qualitySliderDefault))
-//            try mosaicCreator.setGridSizePoints(Int(sizeSliderDefault))
-//        } catch {
-//            print("Issue with initial setting of setting quality/grid size points.\n")
-//        }
+        mosaicCreator = MosaicCreator(reference: image)
+
+        do {
+            //如果预处理完成就显示goButton
+            try prepro.preprocessLibrary(complete: {
+                self.goButton.isHidden = false
+            })
+        } catch {
+            print("预处理出错")
+        }
+
+        // 网格和质量滑块设置最大最小值 默认值
+        sizeSlider.minimumValue = Float(MosaicCreationConstants.gridSizeMin)
+        sizeSlider.maximumValue = Float(MosaicCreationConstants.gridSizeMax)
+        qualitySlider.minimumValue = Float(MosaicCreationConstants.qualityMin)
+        qualitySlider.maximumValue = Float(MosaicCreationConstants.qualityMax)
+
+        let sizeSliderDefault = Float(MosaicCreationConstants.gridSizeMax - MosaicCreationConstants.gridSizeMin)/2
+        let qualitySliderDefault = Float(MosaicCreationConstants.qualityMax - MosaicCreationConstants.qualityMin)/2
+
+        sizeSlider.value = sizeSliderDefault
+        qualitySlider.value = qualitySliderDefault
+
+        do {
+            // 传递滑块默认值
+            try mosaicCreator.setQuality(Int(qualitySliderDefault))
+            try mosaicCreator.setGridSizePoints(Int(sizeSliderDefault))
+        } catch {
+            print("初始化滑块设置错误 \n")
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -64,22 +65,22 @@ class CreateMosaicViewController: UIViewController {
     
     // 网格大小改变
     @IBAction func sizeChanged(_ sender: UISlider) {
-//        let value = Int(sender.value)
-//        do {
-//            try mosaicCreator.setGridSizePoints(value)
-//        } catch {
-//            print("Error with setting grid size.\n")
-//        }
+        let value = Int(sender.value)
+        do {
+            try mosaicCreator.setGridSizePoints(value)
+        } catch {
+            print("Error with setting grid size.\n")
+        }
     }
     
     // 图片质量改变
     @IBAction func qualityChanged(_ sender: UISlider) {
-//        let value = Int(sender.value)
-//        do {
-//            try mosaicCreator.setQuality(value)
-//        } catch {
-//            print("Error with setting quality.\n")
-//        }
+        let value = Int(sender.value)
+        do {
+            try mosaicCreator.setQuality(value)
+        } catch {
+            print("Error with setting quality.\n")
+        }
     }
     
     // 创造合成图片
@@ -97,10 +98,10 @@ class CreateMosaicViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if segue.identifier == "CreatMosaicToCompositePhoto" {
-//            if let compositePhotoViewController = segue.destination as? CompositePhotoViewController {
-//                compositePhotoViewController.mosaicCreator = mosaicCreator
-//            }
-//        }
+        if segue.identifier == "CreatMosaicToCompositePhoto" {
+            if let compositePhotoViewController = segue.destination as? CompositePhotoViewController {
+                compositePhotoViewController.mosaicCreator = mosaicCreator
+            }
+        }
     }
 }
