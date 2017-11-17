@@ -28,6 +28,18 @@ class MetalImageSelection {
         self.numThreads = 4
     }
     
+    
+    func preprocess(then complete: @escaping () -> Void) throws -> Void {
+        
+        print("Pre-processing library...")
+        
+        try self.kpa.preprocessLibrary(complete: {() -> Void in
+            print("Done pre-processing.")
+            complete()
+        })
+    }
+    
+    
     func select(gridSizePoints: Int, numGridSpaces: Int, numRows: Int, numCols: Int, quality: Int, completeSelect: @escaping ([String]) -> Void) throws -> Void {
         let texture = try KPointAveraging.metal!.getImageTexture(image: self.refCGImage)
         KPointAveraging.metal?.processEntirePhotoTexture(texture: texture, gridSize: gridSizePoints, numGridSpaces: numGridSpaces, rows: numRows, cols: numCols, threadWidth: 32, complete: { (results) in

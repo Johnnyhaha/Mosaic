@@ -138,18 +138,20 @@ class KPointAveraging {
     // 预处理-------------------------------
     func preprocessLibrary(complete: @escaping () -> Void) -> Void {
         // 全局队列异步并行 后台优先级
-        DispatchQueue.global(qos: .background).async {
+//        DispatchQueue.global(qos: .background).async {
             // 查看相册授权
             PHPhotoLibrary.requestAuthorization({ (status) in
                 switch status {
                 case .authorized:
-                    let userAlbumsOptions = PHFetchOptions() // 过滤和排序的途径
-                    userAlbumsOptions.predicate = NSPredicate(format: "estimatedAssetCount > 0") // 所有照片
-                    let userAlbums = PHAssetCollection.fetchAssetCollections(with: PHAssetCollectionType.album, subtype: PHAssetCollectionSubtype.albumSyncedAlbum, options: userAlbumsOptions)
+//                    let userAlbumsOptions = PHFetchOptions() // 过滤和排序的途径
+//                    userAlbumsOptions.predicate = NSPredicate(format: "estimatedAssetCount > 0") // 所有照片
+                    let userAlbums = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: nil)
                     print("获得相片权限")
                     // 存储相册库所有照片的KPA值-------------------------------
                     print("开始预处理所有相片")
                     self.preprocessEachPhoto(userAlbums: userAlbums, complete: {(changed: Bool) -> Void in
+                        // 相册库改变就重新存储
+                        self.saveStorageToFile()
                         DispatchQueue.main.async {
                             complete()
                         }
@@ -161,27 +163,32 @@ class KPointAveraging {
                     print("相册获取权限未决定")
                 }
             })
-        }
+//        }
     }
     
-    private func preprocessEachPhoto(userAlbums: PHFetchResult<PHAssetCollection>, complete: @escaping (_ changed: Bool) -> Void) -> Void {
+    private func preprocessEachPhoto(userAlbums: PHFetchResult<PHAssetCollection>, complete: @escaping (_ changed: Bool) -> Void) {
+//        print("开始计算相册库照片KPA")
         var changed: Bool = false
+        print(userAlbums.count)
+//        userAlbums.enumerate
+//        userAlbums.enumerateObjects ({ (collection, albumIndex, stop) in
         //遍历相册 PHAssetCollection: 一组代表性的相册 albumIndex: 相片的索引 序列号
         userAlbums.enumerateObjects({(collection: PHAssetCollection, albumIndex: Int, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
-            let options = PHFetchOptions()
-            let fetchResult = PHAsset.fetchAssets(in: collection, options: options)
+        
+//            let options = PHFetchOptions()
+            let fetchResult = PHAsset.fetchAssets(in: collection, options: nil)
             self.totalPhotos = fetchResult.count
             self.photosComplete = 0
             
             func step() {
                 self.photosComplete += 1
-                print("完成照片\(self.photosComplete)/所有照片\(self.totalPhotos)")
+//                print("完成照片\(self.photosComplete)/所有照片\(self.totalPhotos)")
                 if (self.photosComplete == self.totalPhotos) {
                     print("完成所有照片，结束预处理")
                     complete(changed)
+                    stop.pointee = true
                 }
             }
-            print("开始计算相册库照片KPA")
             //遍历相册里的图片
             fetchResult.enumerateObjects({ (asset: PHAsset, index: Int, stop: UnsafeMutablePointer<ObjCBool>) in
                 if (asset.mediaType == .image) {
@@ -199,7 +206,7 @@ class KPointAveraging {
                                         }
                                         KPointAveraging.storage.insert(asset: asset.localIdentifier, kpa: kpa!)
                                     }
-                                    print("KPA 计算完毕")
+//                                    print("KPA 计算完毕")
                                     step() // 计算完KPA
                                 })
                             } else {
@@ -222,7 +229,7 @@ class KPointAveraging {
     func calculateKPA(image: CGImage, synchronous: Bool, complete: @escaping (KPointAverage?) throws -> Void) -> Void {
         var texture: MTLTexture? = nil // 在GPU中存储图像数据
         do {
-            print("获得图片纹理")
+//            print("获得图片纹理")
             texture = try KPointAveraging.metal?.getImageTexture(image: image)
         } catch {
             print("无法获得图片纹理")
@@ -233,7 +240,7 @@ class KPointAveraging {
             }
         }
         if (texture != nil) {
-            print("开始计算相册库照片KPA平均值")
+//            print("开始计算相册库照片KPA平均值")
             // 处理图像纹理
             KPointAveraging.metal?.processImageTexture(texture: texture!, width: image.width, height: image.height, threadWidth: self.threadWidth, complete: { (result: [UInt32]) -> Void in
                 let kpa = KPointAverage() // 5x5x3维RGB值
@@ -270,7 +277,41 @@ class KPointAveraging {
     }
     
     
+    //File Management
     
+    private func loadStorageFromFile() -> Void {
+        
+        print("Trying to load storage from file.\n")
+        
+        let fileURL = try! FileManager.default
+            .url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            .appendingPathComponent(String(KPointAverageConstants.gridsAcross) + KPointAveraging.storage.pListPath)
+        
+        if let stored = NSKeyedUnarchiver.unarchiveObject(withFile: fileURL.path) as? KPAArray {
+            
+            KPointAveraging.storage = stored
+            print("self.storage successfully loaded from file.\n")
+            
+        }
+    }
+    
+    private func saveStorageToFile() -> Void {
+        
+        print("Trying to save storage to file.\n")
+        
+        let toStore = NSKeyedArchiver.archivedData(withRootObject: KPointAveraging.storage)
+        
+        let fileURL = try! FileManager.default
+            .url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            .appendingPathComponent(String(KPointAverageConstants.gridsAcross) + KPointAveraging.storage.pListPath)
+        
+        do {
+            try toStore.write(to: fileURL)
+        } catch {
+            print("Could not store self.storage to file.\n")
+        }
+        
+    }
     
     
     

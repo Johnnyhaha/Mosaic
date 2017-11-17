@@ -96,7 +96,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Go"/>
                                 <connections>
-                                    <action selector="creatCompositePhoto:" destination="0Un-5d-BaR" eventType="touchUpInside" id="cPG-m5-pMv"/>
+                                    <action selector="creatCompositePhoto:" destination="0Un-5d-BaR" eventType="touchUpInside" id="p9d-PR-maK"/>
                                     <segue destination="hwd-ko-NdC" kind="presentation" identifier="CreateMosaicToCompositePhoto" id="Wvc-A3-d54"/>
                                 </connections>
                             </button>

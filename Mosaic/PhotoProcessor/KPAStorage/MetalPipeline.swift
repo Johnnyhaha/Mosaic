@@ -126,7 +126,7 @@ class MetalPipeline {
             } else {
                 
                 let results : [UInt32] = Array(UnsafeBufferPointer(start: resultBuffer.contents().assumingMemoryBound(to: UInt32.self), count: bufferCount))
-                print("processImageTexture \(results)")
+//                print("processImageTexture \(results)")
                 complete(results)
             }
         })

@@ -9,7 +9,7 @@
 import Foundation
 
 class KPAArray: NSObject, NSCoding {
-    var pLiskpath : String = "array.plist"
+    var pListPath : String = "array.plist"
     private var assets: Set<String>
     var kpaIds: [String]
     var kpaData : [UInt32]

@@ -17,7 +17,7 @@ class CreateMosaicViewController: UIViewController {
     
     var image: UIImage!
     var mosaicCreator: MosaicCreator!
-    var prepro: KPointAveraging = KPointAveraging()
+//    var prepro: KPointAveraging = KPointAveraging()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,11 +30,12 @@ class CreateMosaicViewController: UIViewController {
 
         do {
             //如果预处理完成就显示goButton
-            try prepro.preprocessLibrary(complete: {
+            try mosaicCreator.preprocess(complete: {
                 self.goButton.isHidden = false
+//                self.imageView.image = self.mosaicCreator.imageFromContext()
             })
         } catch {
-            print("预处理出错")
+            print("Call to preprocess caused an error.")
         }
 
         // 网格和质量滑块设置最大最小值 默认值
@@ -87,7 +88,10 @@ class CreateMosaicViewController: UIViewController {
     @IBAction func creatCompositePhoto(_ sender: Any) {
 //        print("Creating composite photo!")
 //        do {
-//            try mosaicCreator.begin()
+//            try mosaicCreator.begin(complete: {
+//                () -> Void in
+//                print("ok23435647586")
+//            })
 //        } catch {
 //            print("Error with calling mosaicCreator.begin.\n")
 //        }

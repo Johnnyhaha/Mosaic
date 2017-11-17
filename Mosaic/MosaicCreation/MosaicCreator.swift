@@ -36,6 +36,7 @@ class MosaicCreator {
         }
     }
     
+    
     // 4.对选择好的图片初始化
     init(reference: UIImage) {
         self.reference = reference
@@ -80,10 +81,18 @@ class MosaicCreator {
         self._quality = quality
     }
     
-//    func preprocess(complete: @escaping () -> Void) -> Void {
-//        self
-//    }
-//    
+    func preprocess(complete: @escaping () -> Void) throws -> Void {
+        
+        
+            
+            try self.imageSelector.preprocess(then: {() -> Void in
+                
+                print("done preprocessing. array:")
+                complete()
+            })
+    }
+    
+
     func begin(complete: @escaping() -> Void) throws -> Void {
         // 合成图像行列数
         let numRows = Int(self.reference.size.height) / self._gridSizePoints
@@ -131,7 +140,7 @@ class MosaicCreator {
                                 UIGraphicsPopContext()
                                 squaresComplete += 1
                                 if (squaresComplete == numCols * numRows) {
-                                    print("完成着色")
+                                    print("完成着色")                                    
                                     complete()
                                 }
                             }
