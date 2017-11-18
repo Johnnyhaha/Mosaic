@@ -100,7 +100,7 @@ class MosaicCreator {
         self.totalGridSpaces = numRows * numCols
         self.gridSpacesFilled = 0
         try self.imageSelector.select(gridSizePoints: self._gridSizePoints, numGridSpaces: self.totalGridSpaces, numRows: numRows, numCols: numCols, quality: self._quality, completeSelect: { (assetIds) in
-            print("获得照片索引 开始选择最接近的匹配图片")
+            print("获得最匹配照片的索引 开始选择最接近的匹配图片")
             var assetData : [String : PHAsset] = [:]
             let choiceAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetIds, options: nil)
             choiceAssets.enumerateObjects({ (asset: PHAsset, index: Int, stop: UnsafeMutablePointer<ObjCBool>) in

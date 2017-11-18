@@ -17,7 +17,7 @@ class MetalPipeline {
     let commandQueue : MTLCommandQueue
     let library: MTLLibrary
     let KPointAverage : MTLFunction
-    let KPointAverageAcrossThreadGroups : MTLFunction
+//    let KPointAverageAcrossThreadGroups : MTLFunction
     let PhotoKPointAverage : MTLFunction
     let FindNearestMatches : MTLFunction
     var pipelineState : MTLComputePipelineState? = nil
@@ -32,7 +32,7 @@ class MetalPipeline {
         // 通过名字获取函数  编译着色器shader
         // 小相册KPA
         self.KPointAverage = self.library.makeFunction(name: "findKPointAverage")!
-        self.KPointAverageAcrossThreadGroups = self.library.makeFunction(name: "findKPointAverageAcrossThreadGroups")!
+//        self.KPointAverageAcrossThreadGroups = self.library.makeFunction(name: "findKPointAverageAcrossThreadGroups")!
         //参考照片KPA
         self.PhotoKPointAverage = self.library.makeFunction(name: "findPhotoKPointAverage")!
         //匹配功能
@@ -40,7 +40,7 @@ class MetalPipeline {
         // 创建设置了函数和像素格式的管道描述器
         do {
             self.pipelineState = try self.device.makeComputePipelineState(function: self.KPointAverage)
-            self.pipelineState = try self.device.makeComputePipelineState(function: self.KPointAverageAcrossThreadGroups)
+//            self.pipelineState = try self.device.makeComputePipelineState(function: self.KPointAverageAcrossThreadGroups)
             self.photoPipelineState = try self.device.makeComputePipelineState(function: self.PhotoKPointAverage)
             self.matchesPipelineState = try self.device.makeComputePipelineState(function: self.FindNearestMatches)
         } catch {
@@ -96,7 +96,7 @@ class MetalPipeline {
     func processImageTexture(texture: MTLTexture, width: Int, height: Int, threadWidth: Int, complete : @escaping ([UInt32]) -> Void) {
         let commandBuffer = self.commandQueue.makeCommandBuffer() // 命令缓冲区
         let commandEncoder = commandBuffer.makeComputeCommandEncoder() // 命令编码器
-        // 在绘制指令之前，我们使用预编译的管道状态设置渲染命令编码器并建立缓冲区，该缓冲区将作为顶点着色器的参数-----------------
+        
         commandEncoder.setComputePipelineState(self.pipelineState!)
         commandEncoder.setTexture(texture, at: 0)
         
@@ -117,7 +117,7 @@ class MetalPipeline {
         // --------------------------------------------------------------------------------------------
         
         let gridSize : MTLSize = MTLSize(width: 8, height: 1, depth: 1)
-        let threadGroupSize : MTLSize = MTLSize(width: 32, height: 1, depth: 1)
+        let threadGroupSize : MTLSize = MTLSize(width: 32, height: 1, depth: 1) // 分组 Encoder 数据
         commandEncoder.dispatchThreadgroups(gridSize, threadsPerThreadgroup: threadGroupSize)
         commandEncoder.endEncoding()
         commandBuffer.addCompletedHandler({(buffer) -> Void in
@@ -148,7 +148,9 @@ class MetalPipeline {
         params.storeBytes(of: UInt32(rows), toByteOffset: 4, as: UInt32.self)
         params.storeBytes(of: UInt32(cols), toByteOffset: 8, as: UInt32.self)
         params.storeBytes(of: UInt32(KPointAverageConstants.gridsAcross), toByteOffset: 12, as: UInt32.self)
+        // 使用 Metal 绘制顶点数据，我们需要将它放入缓冲区。缓冲区是被 CPU 和 GPU 共享的简单的无结构的内存块
         let paramBuffer = self.device.makeBuffer(bytes: params, length: paramBufferLength, options: options)
+        // 在绘制指令之前，我们使用预编译的管道状态设置渲染命令编码器并建立缓冲区，该缓冲区将作为顶点着色器的参数
         commandEncoder.setBuffer(paramBuffer, offset: 0, at: 0)
         
         
@@ -159,9 +161,10 @@ class MetalPipeline {
         
         
         let gridSize : MTLSize = MTLSize(width: 32, height: 1, depth: 1)
-        let threadGroupSize : MTLSize = MTLSize(width: 64, height: 1, depth: 1)
-        
+        let threadGroupSize : MTLSize = MTLSize(width: 64, height: 1, depth: 1) // 分组 Encoder 数据
+        // 在 Compute encoder 中，为了提高计算的效率，每个图片都会分为一个小的单元送到 GPU 进行并行处理，分多少组和每个组的单元大小都是由 Encoder 来配置的。
         commandEncoder.dispatchThreadgroups(gridSize, threadsPerThreadgroup: threadGroupSize)
+        // 通知编码器发布绘制指令完成
         commandEncoder.endEncoding()
         commandBuffer.addCompletedHandler({(buffer) -> Void in
             if (buffer.error != nil) {
@@ -172,6 +175,7 @@ class MetalPipeline {
                 complete(results)
             }
         })
+        // 编码结束之后，开始准备提交到 GPU
         commandBuffer.commit()
     }
     

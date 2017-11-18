@@ -23,11 +23,12 @@ using namespace metal;
  * 预处理 小相册的KPA计算
  */
 kernel void findKPointAverage(
-                                 texture2d<float, access::read> image [[ texture(0) ]],
-                                 device uint* result [[ buffer(0) ]],
-                                 device uint* params [[ buffer(1) ]],
-                                 uint threadId [[ thread_position_in_grid ]],
-                                 uint numThreads [[ threads_per_grid ]]
+                              // 读入的图片资源
+                             texture2d<float, access::read> image [[ texture(0) ]],
+                             device uint* result [[ buffer(0) ]], // 代表着从顶点返回的顶点信息
+                             device uint* params [[ buffer(1) ]],
+                             uint threadId [[ thread_position_in_grid ]],
+                             uint numThreads [[ threads_per_grid ]]
                                  ) {
     float4 squareColor = float4(0.0, 0.0, 0.0, 0.0);
     

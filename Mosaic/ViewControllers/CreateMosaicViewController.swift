@@ -102,7 +102,7 @@ class CreateMosaicViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "CreatMosaicToCompositePhoto" {
+        if segue.identifier == "CreateMosaicToCompositePhoto" {
             if let compositePhotoViewController = segue.destination as? CompositePhotoViewController {
                 compositePhotoViewController.mosaicCreator = mosaicCreator
             }
