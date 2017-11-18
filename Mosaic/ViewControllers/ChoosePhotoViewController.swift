@@ -33,6 +33,7 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
             imagePicker.delegate = self
             imagePicker.sourceType = .photoLibrary
             imagePicker.isEditing = false
+//            imagePicker.
             
             self.present(imagePicker, animated: true, completion: nil)
         }
@@ -72,8 +73,36 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ChoosePhotoToCreateMosaic" {
             if let CreatMosaicViewContorller = segue.destination as? CreateMosaicViewController {
-                CreatMosaicViewContorller.image = pickedImage
+                CreatMosaicViewContorller.image = pickedImage.scaleImage(scaleSize: 2.0)
             }
         }
+    }
+    
+    
+}
+
+extension UIImage {
+    func YhyReSizeImage(reSize:CGSize)->UIImage {
+        
+        //UIGraphicsBeginImageContext(reSize);
+        
+        UIGraphicsBeginImageContextWithOptions(reSize,false,UIScreen.main.scale);
+        
+        self.draw(in: CGRect(x: 0, y: 0, width: reSize.width, height: reSize.height))
+        
+        let reSizeImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!;
+        
+        UIGraphicsEndImageContext();
+        
+        return reSizeImage;
+        
+    }
+    
+    func scaleImage(scaleSize:CGFloat)->UIImage {
+        
+        let reSize = CGSize(width: self.size.width * scaleSize, height: self.size.height * scaleSize)
+        
+        return YhyReSizeImage(reSize: reSize)
+        
     }
 }
