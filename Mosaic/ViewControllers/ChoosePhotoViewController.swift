@@ -32,7 +32,7 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
             
             imagePicker.delegate = self
             imagePicker.sourceType = .photoLibrary
-            imagePicker.isEditing = false
+            imagePicker.isEditing = true
 //            imagePicker.
             
             self.present(imagePicker, animated: true, completion: nil)
@@ -47,7 +47,7 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
             
             imagePicker.delegate = self
             imagePicker.sourceType = .camera
-            imagePicker.isEditing = false
+            imagePicker.isEditing = true
             
             self.present(imagePicker, animated: true, completion: nil)
         }
@@ -73,7 +73,7 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ChoosePhotoToCreateMosaic" {
             if let CreatMosaicViewContorller = segue.destination as? CreateMosaicViewController {
-                CreatMosaicViewContorller.image = pickedImage.scaleImage(scaleSize: 2.0)
+                CreatMosaicViewContorller.image = pickedImage
             }
         }
     }

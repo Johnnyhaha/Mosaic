@@ -86,15 +86,7 @@ class CreateMosaicViewController: UIViewController {
     
     // 创造合成图片
     @IBAction func creatCompositePhoto(_ sender: Any) {
-//        print("Creating composite photo!")
-//        do {
-//            try mosaicCreator.begin(complete: {
-//                () -> Void in
-//                print("ok23435647586")
-//            })
-//        } catch {
-//            print("Error with calling mosaicCreator.begin.\n")
-//        }
+        
     }
     
     @IBAction func unwindToCreateMosaic(segue: UIStoryboardSegue, sender: Any?) {

@@ -138,7 +138,7 @@ class KPointAveraging {
     // 预处理-------------------------------
     func preprocessLibrary(complete: @escaping () -> Void) -> Void {
         // 全局队列异步并行 后台优先级
-//        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .background).async {
             // 查看相册授权
             PHPhotoLibrary.requestAuthorization({ (status) in
                 switch status {
@@ -163,7 +163,7 @@ class KPointAveraging {
                     print("相册获取权限未决定")
                 }
             })
-//        }
+        }
     }
     
     private func preprocessEachPhoto(userAlbums: PHFetchResult<PHAssetCollection>, complete: @escaping (_ changed: Bool) -> Void) {
@@ -312,14 +312,6 @@ class KPointAveraging {
         }
         
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
 }
+
