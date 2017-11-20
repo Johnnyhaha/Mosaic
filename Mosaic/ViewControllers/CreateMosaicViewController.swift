@@ -50,13 +50,11 @@ class CreateMosaicViewController: UIViewController {
         sizeSlider.value = sizeSliderDefault
         qualitySlider.value = qualitySliderDefault
 
-        do {
-            // 传递滑块默认值
-            try mosaicCreator.setQuality(Int(qualitySliderDefault))
-            try mosaicCreator.setGridSizePoints(Int(sizeSliderDefault))
-        } catch {
-            print("初始化滑块设置错误 \n")
-        }
+        
+        // 传递滑块默认值
+        mosaicCreator.setQuality(Int(qualitySliderDefault))
+        mosaicCreator.setGridSizePoints(Int(sizeSliderDefault))
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -67,21 +65,13 @@ class CreateMosaicViewController: UIViewController {
     // 网格大小改变
     @IBAction func sizeChanged(_ sender: UISlider) {
         let value = Int(sender.value)
-        do {
-            try mosaicCreator.setGridSizePoints(value)
-        } catch {
-            print("Error with setting grid size.\n")
-        }
+        mosaicCreator.setGridSizePoints(value)
     }
     
     // 图片质量改变
     @IBAction func qualityChanged(_ sender: UISlider) {
         let value = Int(sender.value)
-        do {
-            try mosaicCreator.setQuality(value)
-        } catch {
-            print("Error with setting quality.\n")
-        }
+        mosaicCreator.setQuality(value)
     }
     
     // 创造合成图片

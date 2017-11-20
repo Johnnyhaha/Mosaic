@@ -20,17 +20,18 @@ class CompositePhotoViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print("beginning mosaic")
+        print("开始合成马赛克")
         self.compositePhoto.image = self.mosaicCreator.compositeImage
         
         do {
             try self.mosaicCreator.begin(complete: {() -> Void in
                 // This will be called when the mosaic is complete.
-                print("Mosaic complete!")
+                print("马赛克完成!")
                 self.compositePhoto.image = self.mosaicCreator.compositeImage
+                self.canSavePhoto = true
             })
         } catch {
-            print("oh shit")
+            print("合成错误")
         }
     }
     
@@ -44,7 +45,7 @@ class CompositePhotoViewController: UIViewController {
     @IBAction func savePhoto(_ sender: Any) {
         
         if (self.canSavePhoto) {
-            UIImageWriteToSavedPhotosAlbum(self.compositePhotoImage, nil, nil, nil)
+            UIImageWriteToSavedPhotosAlbum(self.mosaicCreator.compositeImage, nil, nil, nil)
         }
         
     }

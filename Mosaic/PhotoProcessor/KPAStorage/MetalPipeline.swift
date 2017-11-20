@@ -171,7 +171,7 @@ class MetalPipeline {
                 print("There was an error finding the KPA of the reference photo: \(buffer.error!.localizedDescription)")
             } else {
                 let results : [UInt32] = Array(UnsafeBufferPointer(start: resultBuffer.contents().assumingMemoryBound(to: UInt32.self), count: bufferCount))
-                print("processEntirePhotoTexture \(results)")
+//                print("processEntirePhotoTexture \(results)")
                 complete(results)
             }
         })

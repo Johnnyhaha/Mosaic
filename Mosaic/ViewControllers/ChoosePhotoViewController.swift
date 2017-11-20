@@ -11,7 +11,6 @@ import Metal
 
 class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 
-    // The Metal device we use to perform Metal operations
     var pickedImage: UIImage!
     var imagePicker = UIImagePickerController()
     
@@ -28,12 +27,11 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
     @IBAction func chooseImage(_ sender: UIButton) {
         
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-            print("Photo Capture")
+            print("相片捕获")
             
             imagePicker.delegate = self
             imagePicker.sourceType = .photoLibrary
-            imagePicker.isEditing = true
-//            imagePicker.
+            imagePicker.isEditing = false
             
             self.present(imagePicker, animated: true, completion: nil)
         }
@@ -43,11 +41,11 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
     @IBAction func takePicture(_ sender: UIButton) {
         
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
-            print("Camera Capture")
+            print("相机捕获")
             
             imagePicker.delegate = self
             imagePicker.sourceType = .camera
-            imagePicker.isEditing = true
+            imagePicker.isEditing = false
             
             self.present(imagePicker, animated: true, completion: nil)
         }
@@ -73,7 +71,7 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ChoosePhotoToCreateMosaic" {
             if let CreatMosaicViewContorller = segue.destination as? CreateMosaicViewController {
-                CreatMosaicViewContorller.image = pickedImage
+                CreatMosaicViewContorller.image = pickedImage.scaleImage(scaleSize: 2.0)
             }
         }
     }
@@ -83,26 +81,27 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
 
 extension UIImage {
     func YhyReSizeImage(reSize:CGSize)->UIImage {
-        
+
         //UIGraphicsBeginImageContext(reSize);
-        
+
         UIGraphicsBeginImageContextWithOptions(reSize,false,UIScreen.main.scale);
-        
+
         self.draw(in: CGRect(x: 0, y: 0, width: reSize.width, height: reSize.height))
-        
+
         let reSizeImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!;
-        
+
         UIGraphicsEndImageContext();
-        
+
         return reSizeImage;
-        
+
     }
-    
+
     func scaleImage(scaleSize:CGFloat)->UIImage {
-        
+
         let reSize = CGSize(width: self.size.width * scaleSize, height: self.size.height * scaleSize)
-        
+
         return YhyReSizeImage(reSize: reSize)
-        
+
     }
 }
+

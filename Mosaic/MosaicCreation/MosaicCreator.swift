@@ -39,12 +39,12 @@ class MosaicCreator {
     
     // 4.对选择好的图片初始化
     init(reference: UIImage) {
-        self.reference = reference
+        self.reference = reference.scaleImage(scaleSize: 2.0)
         self.totalGridSpaces = 0
         self.gridSpacesFilled = 0
         self.drawingThreads = 1
         self.imageSelector = MetalImageSelection(refImage: reference)
-        
+        print(self.reference.size.width)
         // 设置要创建图像的尺寸为所选择的图像尺寸
         UIGraphicsBeginImageContextWithOptions(self.reference.size, false, 0)
         // 返回当前图形上下文
@@ -52,12 +52,10 @@ class MosaicCreator {
         // 从栈中删除顶部当前图形上下文，恢复先前的上下文。
         UIGraphicsPopContext()
         
-        do {
-            self._gridSizePoints = 0
-            try self.setGridSizePoints((MosaicCreationConstants.gridSizeMax + MosaicCreationConstants.gridSizeMin)/2)
-        } catch {
-            print("error initializing grid size")
-        }
+        
+        self._gridSizePoints = 0
+        self.setGridSizePoints((MosaicCreationConstants.gridSizeMax + MosaicCreationConstants.gridSizeMin)/2)
+       
     }
     
     //  设置网格
