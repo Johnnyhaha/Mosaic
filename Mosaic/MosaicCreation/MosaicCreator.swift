@@ -12,10 +12,10 @@ import Photos
 
 struct MosaicCreationConstants {
     static let gridSizeMin = KPointAverageConstants.gridsAcross
-    static let gridSizeMax = 75
+    static let gridSizeMax = 150
     
     static let qualityMin: Float = 0.3
-    static let qualityMax: Float = 3.0
+    static let qualityMax: Float = 0.7
 }
 
 class MosaicCreator {
@@ -39,7 +39,7 @@ class MosaicCreator {
     
     // 4.对选择好的图片初始化
     init(reference: UIImage) {
-        self.reference = reference.scaleImage(scaleSize: CGFloat(self._quality))
+        self.reference = reference.scaleImage(scaleSize: CGFloat(self._quality * 4.0))
         self.totalGridSpaces = 0
         self.gridSpacesFilled = 0
         self.drawingThreads = 1

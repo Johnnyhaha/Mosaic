@@ -45,7 +45,16 @@ class CompositePhotoViewController: UIViewController {
     @IBAction func savePhoto(_ sender: Any) {
         
         if (self.canSavePhoto) {
-            UIImageWriteToSavedPhotosAlbum(self.mosaicCreator.compositeImage, nil, nil, nil)
+            PhotoAlbumUtil.saveImageInAlbum(image: self.mosaicCreator.compositeImage, albumName: "马赛克") { (result) in
+                switch result{
+                case .success:
+                    print("保存成功")
+                case .denied:
+                    print("被拒绝")
+                case .error:
+                    print("保存错误")
+                }
+            }
         }
         
     }
