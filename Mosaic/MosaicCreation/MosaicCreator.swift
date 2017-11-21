@@ -80,9 +80,7 @@ class MosaicCreator {
     }
     
     func preprocess(complete: @escaping () -> Void) throws -> Void {
-        
-        
-            
+
             try self.imageSelector.preprocess(then: {() -> Void in
                 
                 print("done preprocessing. array:")

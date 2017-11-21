@@ -33,7 +33,7 @@ class RGBFloat : NSObject, NSCoding {
         }
     }
     
-    // RGB值相差
+    // RGB值相差和
     static func -(left: RGBFloat, right: RGBFloat) -> CGFloat {
         return abs(left.r-right.r) + abs(left.g-right.g) + abs(left.b-right.b)
     }
@@ -47,7 +47,7 @@ class RGBFloat : NSObject, NSCoding {
         return "(\(self.r), \(self.g), \(self.b))"
     }
     
-    //编码解码
+    //编码解码RGB
     
     func encode(with aCoder: NSCoder) -> Void {
         aCoder.encode(r, forKey: "r")
@@ -96,7 +96,7 @@ class KPointAverage: NSObject, NSCoding {
         return true
     }
     
-    //For NSCoding
+    //编码解码KPA
     
     func encode(with aCoder: NSCoder) -> Void {
         aCoder.encode(totalAvg, forKey: "totalAvg")
@@ -136,7 +136,7 @@ class KPointAveraging {
     
     
     // 预处理-------------------------------
-    func preprocessLibrary(complete: @escaping () -> Void) -> Void {
+    func preprocessLibrary(complete: @escaping () -> Void) throws -> Void {
         // 全局队列异步并行 后台优先级
         DispatchQueue.global(qos: .background).async {
             // 查看相册授权
@@ -145,13 +145,16 @@ class KPointAveraging {
                 case .authorized:
 //                    let userAlbumsOptions = PHFetchOptions() // 过滤和排序的途径
 //                    userAlbumsOptions.predicate = NSPredicate(format: "estimatedAssetCount > 0") // 所有照片
+                    // 相机得来的相册 所有的智能相册
                     let userAlbums = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: nil)
                     print("获得相片权限")
                     // 存储相册库所有照片的KPA值-------------------------------
-                    print("开始预处理所有相片")
+//                    print("开始预处理所有相片")
                     self.preprocessEachPhoto(userAlbums: userAlbums, complete: {(changed: Bool) -> Void in
                         // 相册库改变就重新存储
-                        self.saveStorageToFile()
+                        if (changed) {
+                            self.saveStorageToFile()
+                        }
                         DispatchQueue.main.async {
                             complete()
                         }
@@ -167,11 +170,9 @@ class KPointAveraging {
     }
     
     private func preprocessEachPhoto(userAlbums: PHFetchResult<PHAssetCollection>, complete: @escaping (_ changed: Bool) -> Void) {
-//        print("开始计算相册库照片KPA")
         var changed: Bool = false
         print(userAlbums.count)
-//        userAlbums.enumerate
-//        userAlbums.enumerateObjects ({ (collection, albumIndex, stop) in
+
         //遍历相册 PHAssetCollection: 一组代表性的相册 albumIndex: 相片的索引 序列号
         userAlbums.enumerateObjects({(collection: PHAssetCollection, albumIndex: Int, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
         
@@ -191,12 +192,14 @@ class KPointAveraging {
             }
             //遍历相册里的图片
             fetchResult.enumerateObjects({ (asset: PHAsset, index: Int, stop: UnsafeMutablePointer<ObjCBool>) in
-                if (asset.mediaType == .image) {
-                    let options = PHImageRequestOptions() // 请求图像
+                if (asset.mediaType == .image && !KPointAveraging.storage.isMember(asset.localIdentifier)) {
+                    changed = true // 存在未保存的图片KPA
+                    let options = PHImageRequestOptions() // 获取图片的一些选项配置，比如获取方式
                     // 同步处理请求
                     options.isSynchronous = true
                     // 自动释放池
                     let _ = autoreleasepool {
+                        // 请求图像
                         KPointAveraging.imageManager?.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: PHImageContentMode.default, options: options, resultHandler: { (result, info) in
                             if (result != nil) {
                                 self.calculateKPA(image: result!.cgImage!, synchronous: true, complete: { (kpa) in
@@ -225,11 +228,10 @@ class KPointAveraging {
         
     }
     
-    //KPA 计算图片每一格的GRB平均值
+    //KPA 同步计算图片每一格的GRB平均值
     func calculateKPA(image: CGImage, synchronous: Bool, complete: @escaping (KPointAverage?) throws -> Void) -> Void {
         var texture: MTLTexture? = nil // 在GPU中存储图像数据
         do {
-//            print("获得图片纹理")
             texture = try KPointAveraging.metal?.getImageTexture(image: image)
         } catch {
             print("无法获得图片纹理")
@@ -240,7 +242,6 @@ class KPointAveraging {
             }
         }
         if (texture != nil) {
-//            print("开始计算相册库照片KPA平均值")
             // 处理图像纹理
             KPointAveraging.metal?.processImageTexture(texture: texture!, width: image.width, height: image.height, threadWidth: self.threadWidth, complete: { (result: [UInt32]) -> Void in
                 let kpa = KPointAverage() // 5x5x3维RGB值
@@ -281,7 +282,7 @@ class KPointAveraging {
     
     private func loadStorageFromFile() -> Void {
         
-        print("Trying to load storage from file.\n")
+        print("开始从文件中加载数据\n")
         
         let fileURL = try! FileManager.default
             .url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
@@ -290,14 +291,14 @@ class KPointAveraging {
         if let stored = NSKeyedUnarchiver.unarchiveObject(withFile: fileURL.path) as? KPAArray {
             
             KPointAveraging.storage = stored
-            print("self.storage successfully loaded from file.\n")
+            print("数据加载成功\n")
             
         }
     }
     
     private func saveStorageToFile() -> Void {
         
-        print("Trying to save storage to file.\n")
+        print("开始保存数据到文件\n")
         
         let toStore = NSKeyedArchiver.archivedData(withRootObject: KPointAveraging.storage)
         
@@ -308,7 +309,7 @@ class KPointAveraging {
         do {
             try toStore.write(to: fileURL)
         } catch {
-            print("Could not store self.storage to file.\n")
+            print("保存数据到文件出错\n")
         }
         
     }

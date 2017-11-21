@@ -9,7 +9,7 @@
 #include <metal_stdlib>
 using namespace metal;
 
-// Thread ID == (thread position in thread group) + (thread group position in grid * threads per thread group)
+// Thread ID == (thread position in thread group) + (thread group position in grid * threads per thread group) 线程ID ==（线程组中的线程位置）+（线程组中的线程组位置*每个线程组中的线程）
 
 
 /**
@@ -53,6 +53,7 @@ kernel void findKPointAverage(
             //Now, process that row of the square.方块每行 像素
             for (uint delta = 0; delta < squareWidth; delta++) {
                 uint pixelCol = squareWidth * squareCol + delta;
+                // 读取每一格的每一个像素的RGBA
                 uint2 coord = uint2(pixelCol, pixelRow);
                 squareColor += image.read(coord);
             }

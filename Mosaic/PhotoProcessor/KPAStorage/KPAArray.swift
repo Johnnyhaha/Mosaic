@@ -41,24 +41,19 @@ class KPAArray: NSObject, NSCoding {
         return self.assets.contains(asset)
     }
     
-    //NSCoding
     
     required init?(coder aDecoder: NSCoder) {
         self.assets = aDecoder.decodeObject(forKey: "assets") as! Set<String>
         self.kpaIds = aDecoder.decodeObject(forKey: "kpaIds") as! [String]
         self.kpaData = aDecoder.decodeObject(forKey: "kpaData") as! [UInt32]
         print("Decoding averages")
-        //        self.averages = aDecoder.decodeObject(forKey: "identifier_averages") as! [String : KPointAverage]
     }
     
     
     func encode(with aCoder: NSCoder) -> Void{
-        //        print("Trying to encode averages")
-        //        aCoder.encode(self.averages, forKey: "identifier_averages")
         aCoder.encode(self.assets, forKey: "assets")
         aCoder.encode(self.kpaIds, forKey: "kpaIds")
         aCoder.encode(self.kpaData, forKey: "kpaData")
-        //        print("Averages encoded")
     }
     
 }

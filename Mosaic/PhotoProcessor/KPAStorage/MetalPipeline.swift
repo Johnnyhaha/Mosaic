@@ -54,61 +54,65 @@ class MetalPipeline {
         return try textureLoader.newTexture(with: image)
     }
     
-    // 获取原始纹理
-    private func getImageTextureRaw(image: CGImage) -> MTLTexture {
-        let rawData = calloc(image.height * image.width * 4, MemoryLayout<UInt8>.size)
-        let bytesPerRow = 4 * image.width // 每行的字节数
-        // 选择: 图像的透明度 和信息
-        let options = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Big.rawValue
-        // 石英2D绘图环境
-        let context = CGContext(
-            data: rawData,
-            width: image.width,
-            height: image.height,
-            bitsPerComponent: image.bitsPerComponent,
-            bytesPerRow: bytesPerRow,
-            space: CGColorSpaceCreateDeviceRGB(),
-            bitmapInfo: options
-        )
-        
-        //        draw方法绘制的图像是上下颠倒的
-        context?.draw(image, in : CGRect(x:0, y: 0, width: image.width, height: image.height))
-        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(
-            pixelFormat: .rgba8Unorm,
-            width: image.width,
-            height: image.height,
-            mipmapped: true
-        )
-        // 纹理着色器
-        let texture : MTLTexture = self.device.makeTexture(descriptor: textureDescriptor)
-        texture.replace(region: MTLRegionMake2D(0, 0, image.width, image.height),
-                        mipmapLevel: 0,
-                        slice: 0,
-                        withBytes: rawData!,
-                        bytesPerRow: bytesPerRow,
-                        bytesPerImage: bytesPerRow * image.height)
-        free(rawData)
-        return texture
-    }
+//    // 获取原始纹理
+//    private func getImageTextureRaw(image: CGImage) -> MTLTexture {
+//        let rawData = calloc(image.height * image.width * 4, MemoryLayout<UInt8>.size)
+//        let bytesPerRow = 4 * image.width // 每行的字节数
+//        // 选择: 图像的透明度 和信息
+//        let options = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Big.rawValue
+//        // 石英2D绘图环境
+//        let context = CGContext(
+//            data: rawData,
+//            width: image.width,
+//            height: image.height,
+//            bitsPerComponent: image.bitsPerComponent,
+//            bytesPerRow: bytesPerRow,
+//            space: CGColorSpaceCreateDeviceRGB(),
+//            bitmapInfo: options
+//        )
+//
+//        //        draw方法绘制的图像是上下颠倒的
+//        context?.draw(image, in : CGRect(x:0, y: 0, width: image.width, height: image.height))
+//        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(
+//            pixelFormat: .rgba8Unorm,
+//            width: image.width,
+//            height: image.height,
+//            mipmapped: true
+//        )
+//        // 纹理着色器
+//        let texture : MTLTexture = self.device.makeTexture(descriptor: textureDescriptor)
+//        texture.replace(region: MTLRegionMake2D(0, 0, image.width, image.height),
+//                        mipmapLevel: 0,
+//                        slice: 0,
+//                        withBytes: rawData!,
+//                        bytesPerRow: bytesPerRow,
+//                        bytesPerImage: bytesPerRow * image.height)
+//        free(rawData)
+//        return texture
+//    }
     
-    // 发布绘制图像指令
+    // 预处理所有图像的KPA
     //    先构造 MTLCommandBuffer ，再配置 CommandEncoder ，包括配置资源文件，渲染管线等，再通过 CommandEncoder 进行编码，最后才能提交到队列中去
     func processImageTexture(texture: MTLTexture, width: Int, height: Int, threadWidth: Int, complete : @escaping ([UInt32]) -> Void) {
         let commandBuffer = self.commandQueue.makeCommandBuffer() // 命令缓冲区
         let commandEncoder = commandBuffer.makeComputeCommandEncoder() // 命令编码器
         
+        // pipelineState 获得像素RGBA
         commandEncoder.setComputePipelineState(self.pipelineState!)
         commandEncoder.setTexture(texture, at: 0)
         
         // 为了真正的绘制几何图形，我们告诉 Metal 要绘制的形状 (三角形) 和缓冲区中顶点的数量
+        // result [[ buffer(0) ]]
         let bufferCount = 3 * KPointAverageConstants.numCells // 3*25
         let bufferLength = MemoryLayout<UInt32>.size * bufferCount // 缓冲区长度
         let resultBuffer = self.device.makeBuffer(length: bufferLength)
         commandEncoder.setBuffer(resultBuffer, offset: 0, at: 0)
         
+        // params [[ buffer(1) ]]
         let paramBufferLength = MemoryLayout<UInt32>.size * 3;
         let options = MTLResourceOptions()
         let params = UnsafeMutableRawPointer.allocate(bytes: paramBufferLength, alignedTo: 1)
+        // 该值存储为原始字节 从该指针的偏移量，以字节为单位
         params.storeBytes(of: UInt32(KPointAverageConstants.gridsAcross), toByteOffset: 0, as: UInt32.self)
         params.storeBytes(of: UInt32(width), toByteOffset: 4, as: UInt32.self)
         params.storeBytes(of: UInt32(height), toByteOffset: 8, as: UInt32.self)
@@ -122,7 +126,7 @@ class MetalPipeline {
         commandEncoder.endEncoding()
         commandBuffer.addCompletedHandler({(buffer) -> Void in
             if (buffer.error != nil) {
-                print("There was an error completing an image texture: \(buffer.error!.localizedDescription)")
+                print("完成图像纹理出错: \(buffer.error!.localizedDescription)")
             } else {
                 
                 let results : [UInt32] = Array(UnsafeBufferPointer(start: resultBuffer.contents().assumingMemoryBound(to: UInt32.self), count: bufferCount))
