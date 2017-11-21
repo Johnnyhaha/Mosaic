@@ -78,74 +78,74 @@ kernel void findKPointAverage(
  * Note that while this method retains the naming from 9-Point averaging, it takes in a parameter
  * with the squaresInRow = sqrt(K) for K-Point averaging.
  */
-kernel void findKPointAverageAcrossThreadGroups(
-                                                   texture2d<float, access::read> image [[ texture(0) ]],
-                                                   device uint* result [[ buffer(0) ]],
-                                                   device uint* params [[ buffer(1) ]],
-                                                   uint threadId [[ thread_position_in_threadgroup ]],
-                                                   uint threadsInGroup [[ threads_per_threadgroup ]],
-                                                   uint threadGroupId [[ threadgroup_position_in_grid ]]
-                                                   ) {
-    threadgroup atomic_uint red;
-    threadgroup atomic_uint green;
-    threadgroup atomic_uint blue;
-    
-    if (threadId == 0) {
-        atomic_store_explicit(&red, 0, memory_order_relaxed);
-        atomic_store_explicit(&green, 0, memory_order_relaxed);
-        atomic_store_explicit(&blue, 0, memory_order_relaxed);
-    }
-    
-    threadgroup_barrier(mem_flags::mem_device);
-    
-    const int squaresInRow = params[0];
-    const int imageWidth = params[1];
-    const int imageHeight = params[2];
-    
-    
-    uint squareHeight = imageHeight / squaresInRow;
-    uint squareWidth = imageWidth / squaresInRow;
-    
-    uint squareIndex = threadGroupId;
-    if (squareIndex < squaresInRow * squaresInRow) {
-        float4 sum = float4(0.0, 0.0, 0.0, 0.0);
-        int numRows = 0;
-        for (uint row = threadId; row < squareHeight; row += threadsInGroup) {
-            numRows++;
-            uint squareRow = (squareIndex / squaresInRow);
-            uint squareCol = squareIndex % squaresInRow;
-            
-            uint pixelRow = squareRow * squareHeight + row;
-            
-            //Now, process that row of the square.
-            for (uint delta = 0; delta < squareWidth; delta++) {
-                uint pixelCol = squareCol * squareHeight + delta;
-                uint2 coord = uint2(pixelRow, pixelCol);
-                float4 colorAtIndex = image.read(coord);
-                sum += colorAtIndex;
-            }
-        }
-        threadgroup_barrier(mem_flags::mem_device);
-        if (numRows > 0) {
-            sum.r = sum.r  / (numRows * squareWidth) * 100.0;
-            sum.g = sum.g  / (numRows * squareWidth) * 100.0;
-            sum.b = sum.b  / (numRows * squareWidth) * 100.0;
-            
-            atomic_fetch_add_explicit(&red, int(sum.r), memory_order_relaxed);
-            atomic_fetch_add_explicit(&green, int(sum.g), memory_order_relaxed);
-            atomic_fetch_add_explicit(&blue, int(sum.b), memory_order_relaxed);
-        }
-        threadgroup_barrier(mem_flags::mem_device);
-        
-        int numWorkers = min(threadsInGroup, squareHeight);
-        
-        if (threadId == 0) {
-            result[squareIndex * 3 + 0] = uint(atomic_load_explicit(&red, memory_order_relaxed) / numWorkers);
-            result[squareIndex * 3 + 1] = uint(atomic_load_explicit(&green, memory_order_relaxed) / numWorkers);
-            result[squareIndex * 3 + 2] = uint(atomic_load_explicit(&blue, memory_order_relaxed) / numWorkers);
-        }
-    }
-}
+//kernel void findKPointAverageAcrossThreadGroups(
+//                                                   texture2d<float, access::read> image [[ texture(0) ]],
+//                                                   device uint* result [[ buffer(0) ]],
+//                                                   device uint* params [[ buffer(1) ]],
+//                                                   uint threadId [[ thread_position_in_threadgroup ]],
+//                                                   uint threadsInGroup [[ threads_per_threadgroup ]],
+//                                                   uint threadGroupId [[ threadgroup_position_in_grid ]]
+//                                                   ) {
+//    threadgroup atomic_uint red;
+//    threadgroup atomic_uint green;
+//    threadgroup atomic_uint blue;
+//
+//    if (threadId == 0) {
+//        atomic_store_explicit(&red, 0, memory_order_relaxed);
+//        atomic_store_explicit(&green, 0, memory_order_relaxed);
+//        atomic_store_explicit(&blue, 0, memory_order_relaxed);
+//    }
+//
+//    threadgroup_barrier(mem_flags::mem_device);
+//
+//    const int squaresInRow = params[0];
+//    const int imageWidth = params[1];
+//    const int imageHeight = params[2];
+//
+//
+//    uint squareHeight = imageHeight / squaresInRow;
+//    uint squareWidth = imageWidth / squaresInRow;
+//
+//    uint squareIndex = threadGroupId;
+//    if (squareIndex < squaresInRow * squaresInRow) {
+//        float4 sum = float4(0.0, 0.0, 0.0, 0.0);
+//        int numRows = 0;
+//        for (uint row = threadId; row < squareHeight; row += threadsInGroup) {
+//            numRows++;
+//            uint squareRow = (squareIndex / squaresInRow);
+//            uint squareCol = squareIndex % squaresInRow;
+//
+//            uint pixelRow = squareRow * squareHeight + row;
+//
+//            //Now, process that row of the square.
+//            for (uint delta = 0; delta < squareWidth; delta++) {
+//                uint pixelCol = squareCol * squareHeight + delta;
+//                uint2 coord = uint2(pixelRow, pixelCol);
+//                float4 colorAtIndex = image.read(coord);
+//                sum += colorAtIndex;
+//            }
+//        }
+//        threadgroup_barrier(mem_flags::mem_device);
+//        if (numRows > 0) {
+//            sum.r = sum.r  / (numRows * squareWidth) * 100.0;
+//            sum.g = sum.g  / (numRows * squareWidth) * 100.0;
+//            sum.b = sum.b  / (numRows * squareWidth) * 100.0;
+//
+//            atomic_fetch_add_explicit(&red, int(sum.r), memory_order_relaxed);
+//            atomic_fetch_add_explicit(&green, int(sum.g), memory_order_relaxed);
+//            atomic_fetch_add_explicit(&blue, int(sum.b), memory_order_relaxed);
+//        }
+//        threadgroup_barrier(mem_flags::mem_device);
+//
+//        int numWorkers = min(threadsInGroup, squareHeight);
+//
+//        if (threadId == 0) {
+//            result[squareIndex * 3 + 0] = uint(atomic_load_explicit(&red, memory_order_relaxed) / numWorkers);
+//            result[squareIndex * 3 + 1] = uint(atomic_load_explicit(&green, memory_order_relaxed) / numWorkers);
+//            result[squareIndex * 3 + 2] = uint(atomic_load_explicit(&blue, memory_order_relaxed) / numWorkers);
+//        }
+//    }
+//}
 
 
 /**
@@ -159,6 +159,7 @@ kernel void findKPointAverageAcrossThreadGroups(
  * Note that while this method retains the naming from 9-Point averaging, it takes in a parameter
  * with the gridsAcross = sqrt(K) for K-Point averaging.
  */
+// 将选择的照片纹理分割成网格，对每个网格求KPA
 kernel void findPhotoKPointAverage(
                                       texture2d<float, access::read> image [[ texture(0) ]],
                                       device uint* params [[ buffer(0) ]],
@@ -167,23 +168,24 @@ kernel void findPhotoKPointAverage(
                                       uint numThreads [[ threads_per_grid ]]
                                       ) {
     
-    const uint gridSize = params[0];
+    const uint gridSize = params[0]; // 网格方块
     const uint numRows = params[1];
     const uint numCols = params[2];
-    const uint gridsAcross = params[3];
+    const uint gridsAcross = params[3]; //方块间隔
     
     // The total number of K-point squares in the entire photo
     uint KPointSquares = numRows * numCols * gridsAcross * gridsAcross;
     
     for (uint squareIndex = threadId; squareIndex < KPointSquares; squareIndex += numThreads) {
         float4 sum = float4(0.0, 0.0, 0.0, 0.0);
-        
+        // 网格方块
         uint gridSquareIndex = squareIndex / (gridsAcross * gridsAcross);
         uint gridSquareX = (gridSquareIndex % numCols) * gridSize;
         uint gridSquareY = (gridSquareIndex / numCols) * gridSize;
         
         uint KPointIndex = squareIndex % (gridsAcross * gridsAcross);
         uint KPointSize = gridSize / gridsAcross;
+        // 实际索引
         uint KPointX = gridSquareX + (( KPointIndex % gridsAcross) * KPointSize);
         uint KPointY = gridSquareY + (( KPointIndex / gridsAcross) * KPointSize);
         
@@ -219,9 +221,9 @@ kernel void findNearestMatches(
                                uint numThreads [[ threads_per_grid ]]
                                ) {
     const int numCells = params[0];
-    const int pointsPerK = numCells * 3;
-    int refKCount = params[1] / pointsPerK;
-    int otherKCount = params[2] / pointsPerK;
+    const int pointsPerK = numCells * 3; // 25 * 3
+    int refKCount = params[1] / pointsPerK; // 网格照片
+    int otherKCount = params[2] / pointsPerK; // 存储照片
     
     for (int refKIndex = threadId; refKIndex < refKCount; refKIndex += numThreads) {
         uint minKId = 0;
@@ -232,6 +234,7 @@ kernel void findNearestMatches(
                 diff += (float(refKs[refKIndex*pointsPerK + delta]) - float(otherKs[otherIndex*pointsPerK + delta])) *
                 (float(refKs[refKIndex*pointsPerK + delta]) - float(otherKs[otherIndex*pointsPerK + delta]));
             }
+            // 从相册中找出与选择照片RGB相差最小的相片的索引
             if (minKId == 0 || diff < minDiff) {
                 minKId = otherIndex;
                 minDiff = diff;

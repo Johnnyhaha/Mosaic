@@ -137,7 +137,7 @@ class MetalPipeline {
         commandBuffer.commit()
     }
     
-    // 处理所有相片的纹理
+    // 处理选择相片的纹理
     func processEntirePhotoTexture(texture: MTLTexture, gridSize: Int, numGridSpaces: Int, rows: Int, cols: Int, threadWidth: Int, complete: @escaping ([UInt32]) -> Void) {
         let commandBuffer = self.commandQueue.makeCommandBuffer()
         let commandEncoder = commandBuffer.makeComputeCommandEncoder()

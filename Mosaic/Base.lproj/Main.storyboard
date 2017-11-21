@@ -40,6 +40,14 @@
                                     <action selector="takePicture:" destination="0Zu-7Y-YSU" eventType="touchUpInside" id="WeI-pT-29N"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uzw-Zi-qYf">
+                                <rect key="frame" x="164" y="436" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="重新处理"/>
+                                <connections>
+                                    <action selector="newPreprocessButton:" destination="0Zu-7Y-YSU" eventType="touchUpInside" id="dRp-or-tNQ"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <viewLayoutGuide key="safeArea" id="Ast-HC-oSr"/>

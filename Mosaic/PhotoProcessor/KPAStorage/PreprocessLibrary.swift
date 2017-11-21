@@ -139,6 +139,11 @@ class KPointAveraging {
     func preprocessLibrary(complete: @escaping () -> Void) throws -> Void {
         // 全局队列异步并行 后台优先级
         DispatchQueue.global(qos: .background).async {
+            // 加载以前预处理的数据，避免重复预处理
+            if (!loadedFromFile) {
+                loadedFromFile = true
+                self.loadStorageFromFile()
+            }
             // 查看相册授权
             PHPhotoLibrary.requestAuthorization({ (status) in
                 switch status {

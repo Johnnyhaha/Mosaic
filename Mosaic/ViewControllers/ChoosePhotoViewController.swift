@@ -9,6 +9,8 @@
 import UIKit
 import Metal
 
+var loadedFromFile : Bool = false
+
 class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 
     var pickedImage: UIImage!
@@ -22,6 +24,11 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    @IBAction func newPreprocessButton(_ sender: UIButton) {
+        loadedFromFile = true
+    }
+    
     
     // 相册库中选择相片
     @IBAction func chooseImage(_ sender: UIButton) {

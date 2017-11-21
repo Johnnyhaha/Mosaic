@@ -17,7 +17,6 @@ class CreateMosaicViewController: UIViewController {
     
     var image: UIImage!
     var mosaicCreator: MosaicCreator!
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,6 +71,7 @@ class CreateMosaicViewController: UIViewController {
         let value = Int(sender.value)
         mosaicCreator.setQuality(value)
     }
+    
     
     // 创造合成图片
     @IBAction func creatCompositePhoto(_ sender: Any) {
