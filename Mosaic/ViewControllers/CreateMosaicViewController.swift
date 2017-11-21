@@ -50,7 +50,7 @@ class CreateMosaicViewController: UIViewController {
 
         
         // 传递滑块默认值
-        mosaicCreator.setQuality(Int(qualitySliderDefault))
+        mosaicCreator.setQuality(Float(qualitySliderDefault))
         mosaicCreator.setGridSizePoints(Int(sizeSliderDefault))
         
     }
@@ -68,7 +68,7 @@ class CreateMosaicViewController: UIViewController {
     
     // 图片质量改变
     @IBAction func qualityChanged(_ sender: UISlider) {
-        let value = Int(sender.value)
+        let value = Float(sender.value)
         mosaicCreator.setQuality(value)
     }
     
@@ -84,6 +84,7 @@ class CreateMosaicViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "CreateMosaicToCompositePhoto" {
+            mosaicCreator = MosaicCreator(reference: image.scaleImage(scaleSize: CGFloat(self.qualitySlider.value)))
             if let compositePhotoViewController = segue.destination as? CompositePhotoViewController {
                 compositePhotoViewController.mosaicCreator = mosaicCreator
             }

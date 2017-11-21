@@ -14,8 +14,8 @@ struct MosaicCreationConstants {
     static let gridSizeMin = KPointAverageConstants.gridsAcross
     static let gridSizeMax = 75
     
-    static let qualityMin = 1
-    static let qualityMax = 100
+    static let qualityMin: Float = 0.3
+    static let qualityMax: Float = 3.0
 }
 
 class MosaicCreator {
@@ -23,7 +23,7 @@ class MosaicCreator {
     var reference: UIImage
     private var compositeContext: CGContext
     private var _gridSizePoints : Int
-    private var _quality : Int = (MosaicCreationConstants.qualityMax + MosaicCreationConstants.qualityMin)/2
+    private var _quality : Float = Float((MosaicCreationConstants.qualityMax + MosaicCreationConstants.qualityMin) / 2.0)
     
     private var totalGridSpaces : Int // 所有网格块的数量
     private var gridSpacesFilled : Int // 填入照片的网格块数量
@@ -39,12 +39,12 @@ class MosaicCreator {
     
     // 4.对选择好的图片初始化
     init(reference: UIImage) {
-        self.reference = reference.scaleImage(scaleSize: 2.0)
+        self.reference = reference.scaleImage(scaleSize: CGFloat(self._quality))
         self.totalGridSpaces = 0
         self.gridSpacesFilled = 0
         self.drawingThreads = 1
         self.imageSelector = MetalImageSelection(refImage: reference)
-        print(self.reference.size.width)
+        print("图片实际宽度:" + "\(self.reference.size.width * 2)")
         // 设置要创建图像的尺寸为所选择的图像尺寸
         UIGraphicsBeginImageContextWithOptions(self.reference.size, false, 0)
         // 返回当前图形上下文
@@ -71,7 +71,7 @@ class MosaicCreator {
     
     
     // 设置质量
-    func setQuality(_ quality: Int) {
+    func setQuality(_ quality: Float) {
         guard (quality >= MosaicCreationConstants.qualityMin &&
             quality <= MosaicCreationConstants.qualityMax) else {
             return print("质量大小超出范围")
@@ -83,7 +83,7 @@ class MosaicCreator {
 
             try self.imageSelector.preprocess(then: {() -> Void in
                 
-                print("done preprocessing. array:")
+                print("确认完成预处理")
                 complete()
             })
     }
@@ -95,7 +95,7 @@ class MosaicCreator {
         let numCols = Int(self.reference.size.width) / self._gridSizePoints
         self.totalGridSpaces = numRows * numCols
         self.gridSpacesFilled = 0
-        try self.imageSelector.select(gridSizePoints: self._gridSizePoints, numGridSpaces: self.totalGridSpaces, numRows: numRows, numCols: numCols, quality: self._quality, completeSelect: { (assetIds) in
+        try self.imageSelector.select(gridSizePoints: self._gridSizePoints, numGridSpaces: self.totalGridSpaces, numRows: numRows, numCols: numCols, quality: Int(self._quality), completeSelect: { (assetIds) in
             print("获得最匹配照片的索引 开始选择最接近的匹配图片")
             var assetData : [String : PHAsset] = [:]
             let choiceAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetIds, options: nil)

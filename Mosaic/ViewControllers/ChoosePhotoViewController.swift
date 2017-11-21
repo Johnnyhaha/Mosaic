@@ -78,7 +78,7 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ChoosePhotoToCreateMosaic" {
             if let CreatMosaicViewContorller = segue.destination as? CreateMosaicViewController {
-                CreatMosaicViewContorller.image = pickedImage.scaleImage(scaleSize: 2.0)
+                CreatMosaicViewContorller.image = pickedImage
             }
         }
     }
@@ -89,7 +89,7 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
 extension UIImage {
     func YhyReSizeImage(reSize:CGSize)->UIImage {
 
-        //UIGraphicsBeginImageContext(reSize);
+        UIGraphicsBeginImageContext(reSize);
 
         UIGraphicsBeginImageContextWithOptions(reSize,false,UIScreen.main.scale);
 
