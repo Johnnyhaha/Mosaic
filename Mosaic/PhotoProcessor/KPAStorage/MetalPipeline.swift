@@ -54,42 +54,6 @@ class MetalPipeline {
         return try textureLoader.newTexture(with: image)
     }
     
-//    // 获取原始纹理
-//    private func getImageTextureRaw(image: CGImage) -> MTLTexture {
-//        let rawData = calloc(image.height * image.width * 4, MemoryLayout<UInt8>.size)
-//        let bytesPerRow = 4 * image.width // 每行的字节数
-//        // 选择: 图像的透明度 和信息
-//        let options = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Big.rawValue
-//        // 石英2D绘图环境
-//        let context = CGContext(
-//            data: rawData,
-//            width: image.width,
-//            height: image.height,
-//            bitsPerComponent: image.bitsPerComponent,
-//            bytesPerRow: bytesPerRow,
-//            space: CGColorSpaceCreateDeviceRGB(),
-//            bitmapInfo: options
-//        )
-//
-//        //        draw方法绘制的图像是上下颠倒的
-//        context?.draw(image, in : CGRect(x:0, y: 0, width: image.width, height: image.height))
-//        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(
-//            pixelFormat: .rgba8Unorm,
-//            width: image.width,
-//            height: image.height,
-//            mipmapped: true
-//        )
-//        // 纹理着色器
-//        let texture : MTLTexture = self.device.makeTexture(descriptor: textureDescriptor)
-//        texture.replace(region: MTLRegionMake2D(0, 0, image.width, image.height),
-//                        mipmapLevel: 0,
-//                        slice: 0,
-//                        withBytes: rawData!,
-//                        bytesPerRow: bytesPerRow,
-//                        bytesPerImage: bytesPerRow * image.height)
-//        free(rawData)
-//        return texture
-//    }
     
     // 预处理所有图像的KPA
     //    先构造 MTLCommandBuffer ，再配置 CommandEncoder ，包括配置资源文件，渲染管线等，再通过 CommandEncoder 进行编码，最后才能提交到队列中去

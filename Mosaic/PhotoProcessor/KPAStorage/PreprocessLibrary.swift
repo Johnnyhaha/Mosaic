@@ -33,28 +33,14 @@ class RGBFloat : NSObject, NSCoding {
         }
     }
     
-    // RGB值相差和
-    static func -(left: RGBFloat, right: RGBFloat) -> CGFloat {
-        return abs(left.r-right.r) + abs(left.g-right.g) + abs(left.b-right.b)
-    }
-    
-    // RGB值相等
-    static func ==(left: RGBFloat, right: RGBFloat) -> Bool {
-        return left.r == right.r && left.g == right.g && left.b == right.b
-    }
-    
-    override var description : String {
-        return "(\(self.r), \(self.g), \(self.b))"
-    }
-    
     //编码解码RGB
-    
+
     func encode(with aCoder: NSCoder) -> Void {
         aCoder.encode(r, forKey: "r")
         aCoder.encode(g, forKey: "g")
         aCoder.encode(b, forKey: "b")
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         self.r = aDecoder.decodeObject(forKey: "r") as! CGFloat
         self.g = aDecoder.decodeObject(forKey: "g") as! CGFloat
@@ -73,36 +59,13 @@ class KPointAverage: NSObject, NSCoding {
         //Setup if necessary
     }
     
-    // 图片KPA值相差
-    static func -(left: KPointAverage, right: KPointAverage) -> CGFloat {
-        var diff : CGFloat = 0.0
-        for row in 0 ..< KPointAverageConstants.gridsAcross {
-            for col in 0 ..< KPointAverageConstants.gridsAcross {
-                diff += pow(abs(left.gridAvg[row][col] - right.gridAvg[row][col]), 2) // pow 平方
-            }
-        }
-        return sqrt(diff)
-    }
-    
-    // 图片KPA值相等
-    static func ==(left: KPointAverage, right: KPointAverage) -> Bool {
-        for i in 0 ..< KPointAverageConstants.gridsAcross {
-            for j in 0 ..< KPointAverageConstants.gridsAcross {
-                if !(left.gridAvg[i][j] == right.gridAvg[i][j]) {
-                    return false
-                }
-            }
-        }
-        return true
-    }
-    
     //编码解码KPA
-    
+
     func encode(with aCoder: NSCoder) -> Void {
         aCoder.encode(totalAvg, forKey: "totalAvg")
         aCoder.encode(gridAvg, forKey: "gridAvg")
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         self.totalAvg = aDecoder.decodeObject(forKey: "totalAvg") as! RGBFloat
         self.gridAvg = aDecoder.decodeObject(forKey: "gridAvg") as! [[RGBFloat]]

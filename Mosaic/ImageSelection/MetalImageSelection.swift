@@ -31,10 +31,10 @@ class MetalImageSelection {
     
     func preprocess(then complete: @escaping () -> Void) throws -> Void {
         
-        print("Pre-processing library...")
+        print("预处理相册")
         
         try self.kpa.preprocessLibrary(complete: {() -> Void in
-            print("Done pre-processing.")
+            print("完成预处理")
             complete()
         })
     }

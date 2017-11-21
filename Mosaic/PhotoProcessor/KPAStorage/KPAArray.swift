@@ -33,10 +33,6 @@ class KPAArray: NSObject, NSCoding {
         }
     }
     
-    func findNearestMatch(to refkpa: KPointAverage) -> (closest: String, diff: Float)? {
-        return nil
-    }
-    
     func isMember(_ asset: String) -> Bool {
         return self.assets.contains(asset)
     }
