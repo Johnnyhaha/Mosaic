@@ -114,7 +114,7 @@ class KPointAveraging {
 //                    let userAlbumsOptions = PHFetchOptions() // 过滤和排序的途径
 //                    userAlbumsOptions.predicate = NSPredicate(format: "estimatedAssetCount > 0") // 所有照片
                     // 相机得来的相册 所有的智能相册
-                    let userAlbums = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: nil)
+                    let userAlbums = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumUserLibrary, options: nil)
                     print("获得相片权限")
                     // 存储相册库所有照片的KPA值-------------------------------
 //                    print("开始预处理所有相片")
@@ -143,12 +143,10 @@ class KPointAveraging {
 
         //遍历相册 PHAssetCollection: 一组代表性的相册 albumIndex: 相片的索引 序列号
         userAlbums.enumerateObjects({(collection: PHAssetCollection, albumIndex: Int, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
-        
-//            let options = PHFetchOptions()
+//            print(collection.localizedTitle)
             let fetchResult = PHAsset.fetchAssets(in: collection, options: nil)
             self.totalPhotos = fetchResult.count
             self.photosComplete = 0
-            
             func step() {
                 self.photosComplete += 1
 //                print("完成照片\(self.photosComplete)/所有照片\(self.totalPhotos)")
@@ -169,20 +167,28 @@ class KPointAveraging {
                     let _ = autoreleasepool {
                         // 请求图像
                         KPointAveraging.imageManager?.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: PHImageContentMode.default, options: options, resultHandler: { (result, info) in
+                            
                             if (result != nil) {
-                                self.calculateKPA(image: result!.cgImage!, synchronous: true, complete: { (kpa) in
-                                    if (kpa != nil) {
-                                        if (self.photosComplete % 40 == 0) {
-                                            print("\(self.photosComplete)/\(self.totalPhotos)")
+                                if ((result!.cgImage!.bytesPerRow * result!.cgImage!.height) < (Int(pow(Double(10), 7)*7))) {
+                                    
+                                    self.calculateKPA(image: result!.cgImage!, synchronous: true, complete: { (kpa) in
+                                        if (kpa != nil) {
+                                            if (self.photosComplete % 40 == 0) {
+                                                print("\(self.photosComplete)/\(self.totalPhotos)")
+                                            }
+                                            KPointAveraging.storage.insert(asset: asset.localIdentifier, kpa: kpa!)
                                         }
-                                        KPointAveraging.storage.insert(asset: asset.localIdentifier, kpa: kpa!)
-                                    }
-//                                    print("KPA 计算完毕")
-                                    step() // 计算完KPA
-                                })
+                                        //print("KPA 计算完毕")
+                                        step() // 计算完KPA
+                                    })
+                                } else {
+                                    step()
+                                }
+                                
                             } else {
                                 step() // 没有照片 结束KPA计算
                             }
+                        
                         })
                     }
                     

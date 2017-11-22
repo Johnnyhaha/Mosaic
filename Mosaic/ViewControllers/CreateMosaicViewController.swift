@@ -42,14 +42,16 @@ class CreateMosaicViewController: UIViewController {
         qualitySlider.minimumValue = Float(MosaicCreationConstants.qualityMin)
         qualitySlider.maximumValue = Float(MosaicCreationConstants.qualityMax)
 
-        let sizeSliderDefault = Float(MosaicCreationConstants.gridSizeMax - MosaicCreationConstants.gridSizeMin)/2
-        let qualitySliderDefault = Float(MosaicCreationConstants.qualityMax - MosaicCreationConstants.qualityMin)/2
+        let sizeSliderDefault = Float(MosaicCreationConstants.gridSizeMax + MosaicCreationConstants.gridSizeMin)/2
+        let qualitySliderDefault = Float(MosaicCreationConstants.qualityMax + MosaicCreationConstants.qualityMin)/2
 
         sizeSlider.value = sizeSliderDefault
         qualitySlider.value = qualitySliderDefault
 
         
         // 传递滑块默认值
+        print(Float(qualitySliderDefault))
+        print(Int(sizeSliderDefault))
         mosaicCreator.setQuality(Float(qualitySliderDefault))
         mosaicCreator.setGridSizePoints(Int(sizeSliderDefault))
         
@@ -62,16 +64,16 @@ class CreateMosaicViewController: UIViewController {
     
     // 网格大小改变
     @IBAction func sizeChanged(_ sender: UISlider) {
-        let value = Int(sender.value)
-        mosaicCreator.setGridSizePoints(value)
-        print(Int(sender.value))
+//        let value = Int(sender.value)
+//        mosaicCreator.setGridSizePoints(value)
+//        print(Int(sender.value))
     }
     
     // 图片质量改变
     @IBAction func qualityChanged(_ sender: UISlider) {
-        let value = Float(sender.value)
-        mosaicCreator.setQuality(value)
-        print(Float(sender.value))
+//        let value = Float(sender.value)
+//        mosaicCreator.setQuality(value)
+//        print(Float(sender.value))
     }
     
     
@@ -86,7 +88,17 @@ class CreateMosaicViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "CreateMosaicToCompositePhoto" {
-            mosaicCreator = MosaicCreator(reference: image.scaleImage(scaleSize: CGFloat(self.qualitySlider.value)))
+            
+            if (image.size.width < 2000 && image.size.height < 2000) {
+                mosaicCreator = MosaicCreator(reference: image.scaleImage(scaleSize: CGFloat(self.qualitySlider.value)))
+                mosaicCreator.setQuality(self.qualitySlider.value)
+                mosaicCreator.setGridSizePoints(Int(self.sizeSlider.value))
+            } else {
+                mosaicCreator = MosaicCreator(reference: image.scaleImage(scaleSize: 0.4))
+                mosaicCreator.setQuality(0.4)
+                mosaicCreator.setGridSizePoints(40)
+            }
+            
             if let compositePhotoViewController = segue.destination as? CompositePhotoViewController {
                 compositePhotoViewController.mosaicCreator = mosaicCreator
             }

@@ -11,8 +11,8 @@ import UIKit
 import Photos
 
 struct MosaicCreationConstants {
-    static let gridSizeMin = KPointAverageConstants.gridsAcross
-    static let gridSizeMax = 150
+    static let gridSizeMin = KPointAverageConstants.gridsAcross*2
+    static let gridSizeMax = 30
     
     static let qualityMin: Float = 0.3
     static let qualityMax: Float = 0.7
@@ -65,8 +65,13 @@ class MosaicCreator {
             return print("网格大小超出范围")
         }
         // 每格高度 最小为10
-        let spacesInRow = (MosaicCreationConstants.gridSizeMax - gridSizePoints) + 10
-        self._gridSizePoints = max(Int(min(self.reference.size.width, self.reference.size.height)) / spacesInRow, MosaicCreationConstants.gridSizeMin)
+//        let spacesInRow = (MosaicCreationConstants.gridSizeMax - gridSizePoints) + 10
+//        print(spacesInRow)
+//        self._gridSizePoints = max(Int(min(self.reference.size.width, self.reference.size.height)) / spacesInRow, MosaicCreationConstants.gridSizeMin)
+        
+        self._gridSizePoints = gridSizePoints
+        print("yes")
+        print(self._gridSizePoints)
     }
     
     
@@ -77,6 +82,8 @@ class MosaicCreator {
             return print("质量大小超出范围")
         }
         self._quality = quality
+        print("No")
+        print(self._quality)
     }
     
     func preprocess(complete: @escaping () -> Void) throws -> Void {
