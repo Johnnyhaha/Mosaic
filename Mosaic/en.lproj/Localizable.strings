@@ -5,3 +5,7 @@
   Created by Johnny_L on 2017/11/22.
   Copyright © 2017年 Johnny_L. All rights reserved.
 */
+
+"refresh" = "If you have deleted the photo in the album, click the button above (the album will be reprocessed) and then select a photo.";
+"info" = "1.It takes a long time for the app to start up for the first time, because it processes the color information of all the photos. \n2.If you deleted the photo from the last time you used the application, you need to manually click the button at the top of the homepage to reprocess the photo album and then select the photo. Otherwise the application may not be able to synthesize pictures or crash. \n3.If you select smaller grid and larger size before synthesis,the synthesized mosaic photo will be sharper and take longer. \n4.In order to avoid the phone performance reaches the limit of the collapse of the application or long time of generate mosaics photos, photos which length or width is more than 2000 can not change the grid and size. \n5.Selected photos should have high definition ,and more photos the album collects, better the mosaic photo is.";
+"FeedBack" = "FeedBack";

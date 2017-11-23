@@ -89,7 +89,7 @@ class CreateMosaicViewController: UIViewController {
             } else {
                 mosaicCreator = MosaicCreator(reference: image.scaleImage(scaleSize: 0.4))
                 mosaicCreator.setQuality(0.4)
-                mosaicCreator.setGridSizePoints(40)
+                mosaicCreator.setGridSizePoints(50)
             }
             
             if let compositePhotoViewController = segue.destination as? CompositePhotoViewController {

@@ -236,6 +236,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="U3d-so-qDZ"/>
                     <connections>
+                        <outlet property="refreshLabel" destination="KQJ-8N-W36" id="tZT-8Q-E4r"/>
                         <segue destination="0Un-5d-BaR" kind="show" identifier="ChoosePhotoToCreateMosaic" id="D6Z-0E-YNu"/>
                     </connections>
                 </viewController>
@@ -243,10 +244,10 @@
             </objects>
             <point key="canvasLocation" x="151" y="35"/>
         </scene>
-        <!--View Controller-->
+        <!--Info View Controller-->
         <scene sceneID="a3n-wb-vzJ">
             <objects>
-                <viewController id="kJS-rj-Pcc" sceneMemberID="viewController">
+                <viewController id="kJS-rj-Pcc" customClass="infoViewController" customModule="Mosaic" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="yNA-tI-SQo">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -273,6 +274,9 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="tWo-SN-vXh"/>
                     </view>
+                    <connections>
+                        <outlet property="infoTextView" destination="1lv-Rb-TTd" id="1oh-Lf-EOc"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1SY-iu-J9H" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -510,10 +514,10 @@
                                     <constraint firstAttribute="width" constant="80" id="ycR-uB-BOh"/>
                                 </constraints>
                                 <color key="tintColor" red="0.019607843140000001" green="0.45882352939999999" blue="0.64705882349999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <state key="normal" title="Button" image="download"/>
+                                <state key="normal" image="download"/>
                                 <state key="selected" image="done"/>
                                 <connections>
-                                    <action selector="savePhoto:" destination="hwd-ko-NdC" eventType="touchUpInside" id="Qxx-pz-I3D"/>
+                                    <action selector="savePhoto:" destination="hwd-ko-NdC" eventType="touchUpInside" id="ZEL-Uh-Vkx"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -556,7 +560,7 @@
                     </view>
                     <connections>
                         <outlet property="compositePhoto" destination="5Ru-NU-ZuL" id="ZVX-R5-BGc"/>
-                        <outlet property="saveButton" destination="VPp-YT-ecE" id="KcH-rh-vuM"/>
+                        <outlet property="saveButton" destination="VPp-YT-ecE" id="8hA-S8-8rT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fyD-31-dkg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -585,7 +589,7 @@
     <resources>
         <image name="album" width="240" height="240"/>
         <image name="camera" width="240" height="240"/>
-        <image name="done" width="176" height="134"/>
+        <image name="done" width="240" height="240"/>
         <image name="download" width="240" height="240"/>
         <image name="email" width="100" height="100"/>
         <image name="go" width="160" height="160"/>

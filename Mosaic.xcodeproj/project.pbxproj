@@ -11,6 +11,7 @@
 		2D0580F11FC59098003A06E7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2D0580F31FC59098003A06E7 /* InfoPlist.strings */; };
 		2D0580F81FC59408003A06E7 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2D0580FA1FC59408003A06E7 /* Localizable.strings */; };
 		2D0580FE1FC5A0AD003A06E7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D0580FD1FC5A0AC003A06E7 /* Assets.xcassets */; };
+		2D0581001FC6F35A003A06E7 /* infoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0580FF1FC6F35A003A06E7 /* infoViewController.swift */; };
 		2D0B004B1FBD63B800E0AFB4 /* MetalImageSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0B004A1FBD63B800E0AFB4 /* MetalImageSelection.swift */; };
 		2D0C349E1FB456610055F0A5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0C349D1FB456610055F0A5 /* AppDelegate.swift */; };
 		2D0C34A31FB456610055F0A5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2D0C34A11FB456610055F0A5 /* Main.storyboard */; };
@@ -59,6 +60,7 @@
 		2D0580FB1FC5940A003A06E7 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		2D0580FC1FC5940C003A06E7 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		2D0580FD1FC5A0AC003A06E7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2D0580FF1FC6F35A003A06E7 /* infoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = infoViewController.swift; sourceTree = "<group>"; };
 		2D0B004A1FBD63B800E0AFB4 /* MetalImageSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalImageSelection.swift; sourceTree = "<group>"; };
 		2D0C349A1FB456610055F0A5 /* Mosaic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mosaic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D0C349D1FB456610055F0A5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 				2D8B1DD01FB46EE400242215 /* CreateMosaicViewController.swift */,
 				2D8B1DD41FB46F1700242215 /* CompositePhotoViewController.swift */,
 				2D0580E91FC46265003A06E7 /* SavePhoto.swift */,
+				2D0580FF1FC6F35A003A06E7 /* infoViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -362,6 +365,7 @@
 				2D8B1DD51FB46F1700242215 /* CompositePhotoViewController.swift in Sources */,
 				2D0C34D31FB468FB0055F0A5 /* ChoosePhotoViewController.swift in Sources */,
 				2D3ED3771FBD774200BC793B /* UIImageFixOrientation.swift in Sources */,
+				2D0581001FC6F35A003A06E7 /* infoViewController.swift in Sources */,
 				2D7107051FBC7680004BCEDE /* MetalPipeline.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -557,6 +561,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9NNKG45Q2D;
 				INFOPLIST_FILE = Mosaic/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Johnny.Mosaic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -572,6 +577,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9NNKG45Q2D;
 				INFOPLIST_FILE = Mosaic/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Johnny.Mosaic;
 				PRODUCT_NAME = "$(TARGET_NAME)";

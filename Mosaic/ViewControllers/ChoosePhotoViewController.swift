@@ -12,12 +12,15 @@ import Metal
 var loadedFromFile : Bool = false
 
 class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-
+    
+    @IBOutlet weak var refreshLabel: UILabel!
+    
     var pickedImage: UIImage!
     var imagePicker = UIImagePickerController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        refreshLabel.text = NSLocalizedString("refresh", comment: "refresh")
     }
 
     override func didReceiveMemoryWarning() {
@@ -82,13 +85,13 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
     
     
     @IBAction func feedbackButton(_ sender: UIButton) {
-        let alertController = UIAlertController(title: "FeedBack", message: nil, preferredStyle: .actionSheet)
+        let alertController = UIAlertController(title: NSLocalizedString("FeedBack", comment: "FeedBack"), message: nil, preferredStyle: .actionSheet)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         alertController.addAction(cancelAction)
         
         let weiboAction = UIAlertAction(title: "Weibo", style: .default) { (action) in
-            if let url = URL(string: "https://weibo.com/mygroups?gid=3725055240034717&wvr=6&leftnav=1&isspecialgroup=1") {
+            if let url = URL(string: "https://weibo.com/5192083534/profile?rightmod=1&wvr=6&mod=personinfo&is_all=1") {
                 //根据iOS系统版本，分别处理
                 if #available(iOS 10, *) {
                     UIApplication.shared.open(url, options: [:],

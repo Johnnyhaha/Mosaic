@@ -12,7 +12,7 @@ import Photos
 extension UIImage {
     
     public func cgImageWithOrientation() -> CGImage {
-        // 7.设置图片方向---------------------------------------------
+        // 7.设置图片方向 UIImage -> CGImage ---------------------------------------------
         if imageOrientation == UIImageOrientation.up {
             return self.cgImage!
         }

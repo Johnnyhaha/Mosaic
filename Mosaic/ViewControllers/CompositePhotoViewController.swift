@@ -42,8 +42,7 @@ class CompositePhotoViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    
-    @IBAction func savePhoto(_ sender: Any) {
+    @IBAction func savePhoto(_ sender: UIButton) {
         saveButton.isSelected = !saveButton.isSelected
         if (self.canSavePhoto && saveButton.isSelected) {
             PhotoAlbumUtil.saveImageInAlbum(image: self.mosaicCreator.compositeImage, albumName: "马赛克") { (result) in
@@ -57,7 +56,6 @@ class CompositePhotoViewController: UIViewController {
                 }
             }
         }
-        
     }
     
 
