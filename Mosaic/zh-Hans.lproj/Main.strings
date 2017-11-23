@@ -1,0 +1,36 @@
+
+/* Class = "UINavigationItem"; title = "Mosaic"; ObjectID = "656-2f-Hed"; */
+"656-2f-Hed.title" = "Mosaic";
+
+/* Class = "UIButton"; normalTitle = "照片库选择"; ObjectID = "C6X-ir-bdf"; */
+"C6X-ir-bdf.normalTitle" = "照片库选择";
+
+/* Class = "UINavigationItem"; title = "Composite Photo"; ObjectID = "Fla-B0-s5w"; */
+"Fla-B0-s5w.title" = "Composite Photo";
+
+/* Class = "UIBarButtonItem"; title = "Back"; ObjectID = "Zxh-Xc-Jlx"; */
+"Zxh-Xc-Jlx.title" = "Back";
+
+/* Class = "UILabel"; text = "size"; ObjectID = "cm9-Tw-YPu"; */
+"cm9-Tw-YPu.text" = "size";
+
+/* Class = "UIButton"; normalTitle = "拍照"; ObjectID = "lbB-Ym-0rt"; */
+"lbB-Ym-0rt.normalTitle" = "拍照";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "mwz-1P-2lD"; */
+"mwz-1P-2lD.text" = "Label";
+
+/* Class = "UIBarButtonItem"; title = "Save"; ObjectID = "p7S-3g-KSb"; */
+"p7S-3g-KSb.title" = "Save";
+
+/* Class = "UIButton"; normalTitle = "重新处理"; ObjectID = "uzw-Zi-qYf"; */
+"uzw-Zi-qYf.normalTitle" = "重新处理";
+
+/* Class = "UINavigationItem"; title = "Creat Mosic"; ObjectID = "wDg-XN-gP4"; */
+"wDg-XN-gP4.title" = "Creat Mosic";
+
+/* Class = "UIBarButtonItem"; title = "Cancel"; ObjectID = "xbW-hc-roK"; */
+"xbW-hc-roK.title" = "Cancel";
+
+/* Class = "UIButton"; normalTitle = "Go"; ObjectID = "zWH-tv-mEl"; */
+"zWH-tv-mEl.normalTitle" = "Go";
