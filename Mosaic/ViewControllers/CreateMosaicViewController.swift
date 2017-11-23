@@ -64,16 +64,12 @@ class CreateMosaicViewController: UIViewController {
     
     // 网格大小改变
     @IBAction func sizeChanged(_ sender: UISlider) {
-//        let value = Int(sender.value)
-//        mosaicCreator.setGridSizePoints(value)
-//        print(Int(sender.value))
+
     }
     
     // 图片质量改变
     @IBAction func qualityChanged(_ sender: UISlider) {
-//        let value = Float(sender.value)
-//        mosaicCreator.setQuality(value)
-//        print(Float(sender.value))
+
     }
     
     
@@ -82,10 +78,7 @@ class CreateMosaicViewController: UIViewController {
         
     }
     
-    @IBAction func unwindToCreateMosaic(segue: UIStoryboardSegue, sender: Any?) {
-        
-    }
-    
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "CreateMosaicToCompositePhoto" {
             

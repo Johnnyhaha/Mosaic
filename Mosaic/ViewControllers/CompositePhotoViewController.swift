@@ -11,7 +11,8 @@ import UIKit
 class CompositePhotoViewController: UIViewController {
 
     @IBOutlet weak var compositePhoto: UIImageView! = UIImageView()
-    @IBOutlet weak var saveButton: UIBarButtonItem!
+
+    @IBOutlet weak var saveButton: UIButton!
     
     var mosaicCreator: MosaicCreator!
     var compositePhotoImage: UIImage = UIImage()
