@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Akk-s1-ta5">
-    <device id="retina4_0" orientation="portrait">
+    <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -16,18 +16,18 @@
             <objects>
                 <viewController id="0Zu-7Y-YSU" customClass="ChoosePhotoViewController" customModule="Mosaic" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="GIg-UA-NwS">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="35J-NX-hD5">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <items>
                                     <navigationItem title="Mosaic" id="656-2f-Hed"/>
                                 </items>
                             </navigationBar>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="130" translatesAutoresizingMaskIntoConstraints="NO" id="rBP-Zd-ZYD">
-                                <rect key="frame" x="10" y="118" width="300" height="332"/>
+                                <rect key="frame" x="37.5" y="167.5" width="300" height="332"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uzw-Zi-qYf">
                                         <rect key="frame" x="110" y="0.0" width="80" height="80"/>
@@ -109,17 +109,132 @@
                                 <variation key="heightClass=regular-widthClass=compact" spacing="30"/>
                                 <variation key="heightClass=regular-widthClass=regular" spacing="130"/>
                             </stackView>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="80" translatesAutoresizingMaskIntoConstraints="NO" id="fL6-My-rjH">
+                                <rect key="frame" x="87.5" y="600" width="200" height="40"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wj3-Mk-Fiv">
+                                        <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="wj3-Mk-Fiv" secondAttribute="height" multiplier="1:1" id="Skc-Fc-l1Y"/>
+                                            <constraint firstAttribute="width" constant="60" id="V5m-i1-8FA"/>
+                                            <constraint firstAttribute="height" constant="40" id="z1c-9U-nGg"/>
+                                        </constraints>
+                                        <state key="normal" title="Button" image="email"/>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="V5m-i1-8FA"/>
+                                                <exclude reference="z1c-9U-nGg"/>
+                                            </mask>
+                                        </variation>
+                                        <variation key="heightClass=regular-widthClass=compact">
+                                            <mask key="constraints">
+                                                <include reference="z1c-9U-nGg"/>
+                                            </mask>
+                                        </variation>
+                                        <variation key="heightClass=regular-widthClass=regular">
+                                            <mask key="constraints">
+                                                <include reference="V5m-i1-8FA"/>
+                                            </mask>
+                                        </variation>
+                                        <connections>
+                                            <action selector="feedbackButton:" destination="0Zu-7Y-YSU" eventType="touchUpInside" id="kYi-XW-3cx"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Hm-Wq-ZYt">
+                                        <rect key="frame" x="80" y="0.0" width="40" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="2Hm-Wq-ZYt" secondAttribute="height" multiplier="1:1" id="Hqf-3c-E15"/>
+                                            <constraint firstAttribute="width" constant="60" id="fN6-Qg-2zH"/>
+                                            <constraint firstAttribute="height" constant="40" id="xTT-D8-3rA"/>
+                                        </constraints>
+                                        <color key="tintColor" red="0.019607843140000001" green="0.45882352939999999" blue="0.64705882349999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <state key="normal" title="Button" image="like"/>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="fN6-Qg-2zH"/>
+                                                <exclude reference="xTT-D8-3rA"/>
+                                            </mask>
+                                        </variation>
+                                        <variation key="heightClass=regular-widthClass=compact">
+                                            <mask key="constraints">
+                                                <include reference="xTT-D8-3rA"/>
+                                            </mask>
+                                        </variation>
+                                        <variation key="heightClass=regular-widthClass=regular">
+                                            <mask key="constraints">
+                                                <include reference="fN6-Qg-2zH"/>
+                                            </mask>
+                                        </variation>
+                                        <connections>
+                                            <action selector="likeButton:" destination="0Zu-7Y-YSU" eventType="touchUpInside" id="4du-VI-cdE"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="33R-pr-CS4">
+                                        <rect key="frame" x="160" y="0.0" width="40" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="1IS-bm-2oi"/>
+                                            <constraint firstAttribute="width" secondItem="33R-pr-CS4" secondAttribute="height" multiplier="1:1" id="UCx-hW-vyl"/>
+                                            <constraint firstAttribute="width" constant="60" id="euy-W9-Jwz"/>
+                                        </constraints>
+                                        <color key="tintColor" red="0.019607843140000001" green="0.45882352939999999" blue="0.64705882349999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <state key="normal" title="Button" image="info"/>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="euy-W9-Jwz"/>
+                                                <exclude reference="1IS-bm-2oi"/>
+                                            </mask>
+                                        </variation>
+                                        <variation key="heightClass=regular-widthClass=compact">
+                                            <mask key="constraints">
+                                                <include reference="1IS-bm-2oi"/>
+                                            </mask>
+                                        </variation>
+                                        <variation key="heightClass=regular-widthClass=regular">
+                                            <mask key="constraints">
+                                                <include reference="euy-W9-Jwz"/>
+                                            </mask>
+                                        </variation>
+                                        <connections>
+                                            <segue destination="kJS-rj-Pcc" kind="show" id="Ckg-h3-u08"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="33R-pr-CS4" firstAttribute="width" secondItem="33R-pr-CS4" secondAttribute="height" multiplier="1:1" id="GRr-4M-kDf"/>
+                                    <constraint firstItem="2Hm-Wq-ZYt" firstAttribute="width" secondItem="2Hm-Wq-ZYt" secondAttribute="height" multiplier="1:1" id="atH-DH-Nnk"/>
+                                    <constraint firstItem="33R-pr-CS4" firstAttribute="width" secondItem="33R-pr-CS4" secondAttribute="height" multiplier="1:1" id="kwY-AF-J7S"/>
+                                </constraints>
+                                <variation key="heightClass=regular-widthClass=compact" spacing="40"/>
+                                <variation key="heightClass=regular-widthClass=regular" spacing="100"/>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="rBP-Zd-ZYD" firstAttribute="centerX" secondItem="GIg-UA-NwS" secondAttribute="centerX" id="Kcj-TN-Hxi"/>
+                            <constraint firstItem="Ast-HC-oSr" firstAttribute="bottom" secondItem="fL6-My-rjH" secondAttribute="bottom" constant="27" id="PiP-eV-Sr4"/>
+                            <constraint firstItem="fL6-My-rjH" firstAttribute="centerX" secondItem="GIg-UA-NwS" secondAttribute="centerX" id="d87-Cx-igc"/>
+                            <constraint firstItem="Ast-HC-oSr" firstAttribute="bottom" secondItem="fL6-My-rjH" secondAttribute="bottom" constant="47" id="ldr-2w-cby"/>
                             <constraint firstItem="rBP-Zd-ZYD" firstAttribute="centerY" secondItem="GIg-UA-NwS" secondAttribute="centerY" id="upZ-RY-t4P"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Ast-HC-oSr"/>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="PiP-eV-Sr4"/>
+                                <exclude reference="ldr-2w-cby"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=compact">
+                            <mask key="constraints">
+                                <include reference="PiP-eV-Sr4"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=regular">
+                            <mask key="constraints">
+                                <include reference="ldr-2w-cby"/>
+                            </mask>
+                        </variation>
                     </view>
-                    <navigationItem key="navigationItem" leftItemsSupplementBackButton="YES" id="U3d-so-qDZ">
-                        <barButtonItem key="backBarButtonItem" title="back" id="4Kf-Ii-Ma3"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="U3d-so-qDZ"/>
                     <connections>
                         <segue destination="0Un-5d-BaR" kind="show" identifier="ChoosePhotoToCreateMosaic" id="D6Z-0E-YNu"/>
                     </connections>
@@ -128,16 +243,51 @@
             </objects>
             <point key="canvasLocation" x="151" y="35"/>
         </scene>
+        <!--View Controller-->
+        <scene sceneID="a3n-wb-vzJ">
+            <objects>
+                <viewController id="kJS-rj-Pcc" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="yNA-tI-SQo">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="1lv-Rb-TTd">
+                                <rect key="frame" x="31.5" y="135.5" width="312.5" height="396"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="1lv-Rb-TTd" secondAttribute="height" multiplier="250:317" id="Vgd-nk-NvJ"/>
+                                </constraints>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                </variation>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="1lv-Rb-TTd" firstAttribute="centerX" secondItem="yNA-tI-SQo" secondAttribute="centerX" id="116-Er-EuV"/>
+                            <constraint firstItem="1lv-Rb-TTd" firstAttribute="width" secondItem="yNA-tI-SQo" secondAttribute="width" multiplier="1:1.2" id="BLV-lA-jH7"/>
+                            <constraint firstItem="1lv-Rb-TTd" firstAttribute="centerY" secondItem="yNA-tI-SQo" secondAttribute="centerY" id="Dqv-c6-EtF"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="tWo-SN-vXh"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1SY-iu-J9H" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="157.59999999999999" y="723.68815592203907"/>
+        </scene>
         <!--Create Mosaic View Controller-->
         <scene sceneID="7cb-vA-28o">
             <objects>
                 <viewController id="0Un-5d-BaR" customClass="CreateMosaicViewController" customModule="Mosaic" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="hhH-Wf-DDV">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ohm-iC-Zf6">
-                                <rect key="frame" x="45.5" y="87" width="239" height="264.5"/>
+                                <rect key="frame" x="47" y="87" width="281" height="311"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="Ohm-iC-Zf6" secondAttribute="height" multiplier="343:380" id="n9i-56-meq"/>
                                     <constraint firstAttribute="width" secondItem="Ohm-iC-Zf6" secondAttribute="height" multiplier="5:6" id="vPG-aS-wcf"/>
@@ -160,10 +310,10 @@
                                 </variation>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="nzA-pO-zAL">
-                                <rect key="frame" x="16" y="378" width="298" height="170"/>
+                                <rect key="frame" x="16" y="477" width="343" height="170"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="2DB-Dq-Uwb">
-                                        <rect key="frame" x="0.0" y="0.0" width="298" height="50"/>
+                                        <rect key="frame" x="26.5" y="0.0" width="290" height="50"/>
                                         <subviews>
                                             <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rIZ-TM-msb">
                                                 <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
@@ -175,7 +325,7 @@
                                                 <state key="normal" title="Button" image="largeGrid"/>
                                             </button>
                                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="DOO-mw-rO7">
-                                                <rect key="frame" x="58" y="0.0" width="182" height="51"/>
+                                                <rect key="frame" x="58" y="0.0" width="174" height="51"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="170" id="PpK-tQ-IgG"/>
                                                     <constraint firstAttribute="width" constant="360" id="c1j-bl-5pg"/>
@@ -201,7 +351,7 @@
                                                 </connections>
                                             </slider>
                                             <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bxL-YU-Vtm">
-                                                <rect key="frame" x="248" y="0.0" width="50" height="50"/>
+                                                <rect key="frame" x="240" y="0.0" width="50" height="50"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="50" id="31D-LL-eco"/>
                                                     <constraint firstAttribute="width" secondItem="bxL-YU-Vtm" secondAttribute="height" multiplier="1:1" id="GvY-sw-tXB"/>
@@ -212,7 +362,7 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="rXw-Lt-TUL">
-                                        <rect key="frame" x="9" y="60" width="280" height="50"/>
+                                        <rect key="frame" x="31.5" y="60" width="280" height="50"/>
                                         <subviews>
                                             <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ar4-Gq-4c2">
                                                 <rect key="frame" x="0.0" y="10" width="30" height="30"/>
@@ -261,7 +411,7 @@
                                         </subviews>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zWH-tv-mEl">
-                                        <rect key="frame" x="109" y="120" width="80" height="50"/>
+                                        <rect key="frame" x="131.5" y="120" width="80" height="50"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="zWH-tv-mEl" secondAttribute="height" multiplier="8:5" id="mHy-Zl-cn3"/>
                                             <constraint firstAttribute="width" constant="80" id="pcH-iX-JIh"/>
@@ -327,11 +477,11 @@
             <objects>
                 <viewController id="hwd-ko-NdC" customClass="CompositePhotoViewController" customModule="Mosaic" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="OyM-k5-W7w">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="5Ru-NU-ZuL">
-                                <rect key="frame" x="33" y="89" width="254" height="315.5"/>
+                                <rect key="frame" x="38.5" y="89" width="298" height="370.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="5Ru-NU-ZuL" secondAttribute="height" multiplier="1:1.2" id="c5h-Ic-Z6b"/>
                                     <constraint firstAttribute="width" secondItem="5Ru-NU-ZuL" secondAttribute="height" multiplier="49:61" id="zEY-k8-tu5"/>
@@ -354,7 +504,7 @@
                                 </variation>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VPp-YT-ecE">
-                                <rect key="frame" x="120" y="444.5" width="80" height="80"/>
+                                <rect key="frame" x="147.5" y="499.5" width="80" height="80"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="80" id="lD4-Ja-I2S"/>
                                     <constraint firstAttribute="width" constant="80" id="ycR-uB-BOh"/>
@@ -419,7 +569,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Akk-s1-ta5" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="vJN-P7-KCW">
-                        <rect key="frame" x="0.0" y="20" width="320" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -437,9 +587,12 @@
         <image name="camera" width="240" height="240"/>
         <image name="done" width="176" height="134"/>
         <image name="download" width="240" height="240"/>
+        <image name="email" width="100" height="100"/>
         <image name="go" width="160" height="160"/>
         <image name="image" width="220" height="160"/>
+        <image name="info" width="100" height="100"/>
         <image name="largeGrid" width="200" height="200"/>
+        <image name="like" width="100" height="100"/>
         <image name="refresh" width="240" height="240"/>
         <image name="smallGrid" width="240" height="240"/>
     </resources>

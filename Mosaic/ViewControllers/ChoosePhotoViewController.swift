@@ -70,9 +70,6 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
         }
     }
     
-    @IBAction func unwindBackToChoosePhoto(for: UIStoryboardSegue, sender: Any?) {
-        
-    }
     
     // 转场传递图片
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -84,31 +81,12 @@ class ChoosePhotoViewController: UIViewController, UINavigationControllerDelegat
     }
     
     
-}
-
-extension UIImage {
-    func YhyReSizeImage(reSize:CGSize)->UIImage {
-
-        UIGraphicsBeginImageContext(reSize);
-
-        UIGraphicsBeginImageContextWithOptions(reSize,false,UIScreen.main.scale);
-
-        self.draw(in: CGRect(x: 0, y: 0, width: reSize.width, height: reSize.height))
-
-        let reSizeImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!;
-
-        UIGraphicsEndImageContext();
-
-        return reSizeImage;
-
+    @IBAction func feedbackButton(_ sender: UIButton) {
     }
-
-    func scaleImage(scaleSize:CGFloat)->UIImage {
-
-        let reSize = CGSize(width: self.size.width * scaleSize, height: self.size.height * scaleSize)
-
-        return YhyReSizeImage(reSize: reSize)
-
+    
+    @IBAction func likeButton(_ sender: UIButton) {
     }
+    
+    
 }
 

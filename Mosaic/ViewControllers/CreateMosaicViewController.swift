@@ -71,7 +71,7 @@ class CreateMosaicViewController: UIViewController {
     @IBAction func qualityChanged(_ sender: UISlider) {
 
     }
-    
+
     
     // 创造合成图片
     @IBAction func creatCompositePhoto(_ sender: Any) {
@@ -98,3 +98,31 @@ class CreateMosaicViewController: UIViewController {
         }
     }
 }
+
+extension UIImage {
+    func YhyReSizeImage(reSize:CGSize)->UIImage {
+        
+        UIGraphicsBeginImageContext(reSize);
+        
+        UIGraphicsBeginImageContextWithOptions(reSize,false,UIScreen.main.scale);
+        
+        self.draw(in: CGRect(x: 0, y: 0, width: reSize.width, height: reSize.height))
+        
+        let reSizeImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!;
+        
+        UIGraphicsEndImageContext();
+        
+        return reSizeImage;
+        
+    }
+    
+    func scaleImage(scaleSize:CGFloat)->UIImage {
+        
+        let reSize = CGSize(width: self.size.width * scaleSize, height: self.size.height * scaleSize)
+        
+        return YhyReSizeImage(reSize: reSize)
+        
+    }
+}
+
+
