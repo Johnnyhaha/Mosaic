@@ -44,8 +44,8 @@ class CompositePhotoViewController: UIViewController {
 
     
     @IBAction func savePhoto(_ sender: Any) {
-        
-        if (self.canSavePhoto) {
+        saveButton.isSelected = !saveButton.isSelected
+        if (self.canSavePhoto && saveButton.isSelected) {
             PhotoAlbumUtil.saveImageInAlbum(image: self.mosaicCreator.compositeImage, albumName: "马赛克") { (result) in
                 switch result{
                 case .success:
