@@ -200,6 +200,9 @@
 			isa = PBXGroup;
 			children = (
 				2DA6FC761FB9C1D100249460 /* KPAStorage */,
+				2D7107021FBC3D4B004BCEDE /* PreprocessLibrary.swift */,
+				2D7107041FBC7680004BCEDE /* MetalPipeline.swift */,
+				2D3ED3781FBD93DC00BC793B /* KPointAveraging.metal */,
 			);
 			path = PhotoProcessor;
 			sourceTree = "<group>";
@@ -208,9 +211,6 @@
 			isa = PBXGroup;
 			children = (
 				2D7107061FBC9110004BCEDE /* KPAArray.swift */,
-				2D7107021FBC3D4B004BCEDE /* PreprocessLibrary.swift */,
-				2D7107041FBC7680004BCEDE /* MetalPipeline.swift */,
-				2D3ED3781FBD93DC00BC793B /* KPointAveraging.metal */,
 			);
 			path = KPAStorage;
 			sourceTree = "<group>";
