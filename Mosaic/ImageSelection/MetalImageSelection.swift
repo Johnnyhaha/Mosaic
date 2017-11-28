@@ -20,6 +20,7 @@ class MetalImageSelection {
     
         
     required init(refImage: UIImage) {
+        print("图片实际宽度7:" + "\(refImage.size.width)")
         self.referenceImage = refImage
         self.refCGImage = refImage.cgImageWithOrientation()
         self.imageManager = PHImageManager()
@@ -41,6 +42,7 @@ class MetalImageSelection {
     
     
     func select(gridSizePoints: Int, numGridSpaces: Int, numRows: Int, numCols: Int, quality: Int, completeSelect: @escaping ([String]) -> Void) throws -> Void {
+        print("图片实际宽度2:" + "\(self.refCGImage.width)")
         let texture = try KPointAveraging.metal!.getImageTexture(image: self.refCGImage)
         KPointAveraging.metal?.processEntirePhotoTexture(texture: texture, gridSize: gridSizePoints, numGridSpaces: numGridSpaces, rows: numRows, cols: numCols, threadWidth: 32, complete: { (results) in
             print("正在查询KPA匹配")

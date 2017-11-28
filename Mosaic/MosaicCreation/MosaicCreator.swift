@@ -11,11 +11,11 @@ import UIKit
 import Photos
 
 struct MosaicCreationConstants {
-    static let gridSizeMin = KPointAverageConstants.gridsAcross*2
+    static let gridSizeMin = KPointAverageConstants.gridsAcross*4
     static let gridSizeMax = 30
     
-    static let qualityMin: Float = 0.3
-    static let qualityMax: Float = 0.7
+    static let qualityMin: Int = 100
+    static let qualityMax: Int = 600
 }
 
 class MosaicCreator {
@@ -23,7 +23,7 @@ class MosaicCreator {
     var reference: UIImage
     private var compositeContext: CGContext
     private var _gridSizePoints : Int
-    private var _quality : Float = Float((MosaicCreationConstants.qualityMax + MosaicCreationConstants.qualityMin) / 2.0)
+    private var _quality : Int = (MosaicCreationConstants.qualityMax + MosaicCreationConstants.qualityMin) / 2
     
     private var totalGridSpaces : Int // 所有网格块的数量
     private var gridSpacesFilled : Int // 填入照片的网格块数量
@@ -32,6 +32,7 @@ class MosaicCreator {
     var compositeImage : UIImage {
         get {
             let cgImage = self.compositeContext.makeImage()!
+            print("图片实际宽度4:" + "\(UIImage.init(cgImage: cgImage).size.width)")
             return UIImage.init(cgImage: cgImage)
         }
     }
@@ -39,16 +40,18 @@ class MosaicCreator {
     
     // 4.对选择好的图片初始化
     init(reference: UIImage) {
-        self.reference = reference.scaleImage(scaleSize: CGFloat(self._quality * 4.0))
+        self.reference = reference.scaleImage(scaleSize: 2.0)
         self.totalGridSpaces = 0
         self.gridSpacesFilled = 0
         self.drawingThreads = 1
         self.imageSelector = MetalImageSelection(refImage: reference)
-        print("图片实际宽度:" + "\(self.reference.size.width * 2)")
+        print("图片实际宽度2:" + "\(self.reference.size.width)")
         // 设置要创建图像的尺寸为所选择的图像尺寸
         UIGraphicsBeginImageContextWithOptions(self.reference.size, false, 0)
         // 返回当前图形上下文
         self.compositeContext = UIGraphicsGetCurrentContext()!
+        let cgImage = self.compositeContext.makeImage()!
+        print("图片实际宽度4:" + "\(UIImage.init(cgImage: cgImage).size.width)")
         // 从栈中删除顶部当前图形上下文，恢复先前的上下文。
         UIGraphicsPopContext()
         
@@ -76,7 +79,7 @@ class MosaicCreator {
     
     
     // 设置质量
-    func setQuality(_ quality: Float) {
+    func setQuality(_ quality: Int) {
         guard (quality >= MosaicCreationConstants.qualityMin &&
             quality <= MosaicCreationConstants.qualityMax) else {
             return print("质量大小超出范围")
@@ -98,6 +101,7 @@ class MosaicCreator {
 
     func begin(complete: @escaping() -> Void) throws -> Void {
         // 合成图像行列数
+        print("图片实际宽度6:" + "\(self.reference.size.width)")
         let numRows = Int(self.reference.size.height) / self._gridSizePoints
         let numCols = Int(self.reference.size.width) / self._gridSizePoints
         self.totalGridSpaces = numRows * numCols
